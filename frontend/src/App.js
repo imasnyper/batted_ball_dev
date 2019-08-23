@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import BattedBalls from "./views/batted_balls";
+import BattedBalls from "./views/BattedBalls";
 
 function App() {
   return (

@@ -127,7 +127,6 @@ GRAPHENE = {
     "SCHEMA": 'batted_ball_dev.schema.schema',
 }
 
-# CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
 ]

@@ -3,7 +3,7 @@ import {useQuery} from '@apollo/react-hooks'
 import React from 'react'
 import BATTED_BALLS_QUERY from '../queries'
 
-export default function BattedBalls(props: any) {
+export default function BattedBalls(props) {
     const {loading, error, data} = useQuery(BATTED_BALLS_QUERY);
 
     if(loading) return <p>Loading...</p>
