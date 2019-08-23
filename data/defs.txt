@@ -1,0 +1,1 @@
+Column, date, gamepk, hometeamid, hometeamname, awayteamid, awayteamname, parkid, park, batterid, battername, batside, batterteamid, pitcherid, pitchername, pitcherteamid, pitchside, balls, strikes, result_type, pitch_type, pitch_speed, zone_location_x, zone_location_z, launch_speed, launch_vert_ang, launch_horiz_ang, landing_location_x, landing_location_y, hang_time
