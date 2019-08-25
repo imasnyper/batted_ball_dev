@@ -8,7 +8,7 @@ from .models import BattedBall
 class BattedBallNode(DjangoObjectType):
     class Meta:
         model = BattedBall
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node,)
         filter_fields = '__all__'
 
 

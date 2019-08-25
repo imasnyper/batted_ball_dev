@@ -6,34 +6,16 @@ import * as serviceWorker from './serviceWorker';
 import {createHttpLink} from "apollo-link-http";
 import ApolloClient from "apollo-client";
 import {ApolloProvider} from 'react-apollo';
-import gql from "graphql-tag";
 import {InMemoryCache} from "apollo-cache-inmemory";
 
 const httpLink = createHttpLink({
     uri: "http://127.0.0.1:8000/graphql/",
-    // credentials: "include",
 })
 
 const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: httpLink,
 })
-
-client.query({
-    query: gql`
-        {
-            allBattedBalls(first: 50) {
-                edges {
-                    node {
-                        battername
-                        pitchername
-                        date
-                    }
-                }
-            }
-        }
-    `
-}).then((result) => console.log(result))
 
 ReactDOM.render(
     <ApolloProvider client={client}>
