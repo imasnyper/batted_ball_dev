@@ -20,12 +20,16 @@ const useStyles = makeStyles(theme => ({
         marginTop: theme.spacing(10)
     },
     progress: {
-        margin: theme.spacing(2)
+        margin: theme.spacing(2),
+        marginTop: theme.spacing(10),
+        color: theme.palette.secondary.main
     },
 }));
 
 export default function ChartContainer(props) {
-    const {loading, error, data} = useQuery(BATTED_BALLS_QUERY);
+    const {loading, error, data, fetchMore} = useQuery(BATTED_BALLS_QUERY, {
+        notifyOnNetworkStatusChange: true
+    });
 
     const classes = useStyles();
 
@@ -34,6 +38,35 @@ export default function ChartContainer(props) {
         console.log(error)
         return <p>Error :(</p>
     }
+
+    const onLoadMore = () => {
+        fetchMore({
+            variables:{
+                cursor: data.allBattedBalls.pageInfo.endCursor
+            },
+            updateQuery: (previousData, newData) => {
+                const oldEdges = previousData.allBattedBalls.edges;
+                const newEdges = newData.fetchMoreResult.allBattedBalls.edges;
+                const pageInfo = newData.fetchMoreResult.allBattedBalls.pageInfo;
+
+                console.log(oldEdges)
+                console.log(newEdges)
+
+                return newEdges.length
+                    ? {
+                        allBattedBalls: {
+                            __typename: previousData.allBattedBalls.__typename,
+                            edges: [...previousData.allBattedBalls.edges, ...newEdges],
+                            pageInfo
+                        }
+                    }
+                    : previousData;
+            }
+        })
+        console.log(fetchMore)
+    }
+
+    let newData = onLoadMore()
 
     return <div>
         <Grid className={classes.chartFilters} alignItems={"center"} justify={"center"} container>
