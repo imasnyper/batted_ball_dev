@@ -15,3 +15,7 @@ class BattedBallNode(DjangoObjectType):
 class Query(graphene.ObjectType):
     batted_ball = graphene.relay.Node.Field(BattedBallNode)
     all_batted_balls = DjangoFilterConnectionField(BattedBallNode)
+    distinct_batters = DjangoFilterConnectionField(BattedBallNode)
+
+    def resolve_distinct_batters(self, args):
+        return BattedBall.objects.order_by().values('battername').distinct()

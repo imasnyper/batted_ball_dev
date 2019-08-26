@@ -1,5 +1,5 @@
 import {useQuery} from "@apollo/react-hooks";
-import {BATTED_BALLS_QUERY} from "../queries";
+import {BATTED_BALLS_QUERY, LAST_BATTED_BALLS} from "../queries";
 import {CircularProgress} from "@material-ui/core";
 import React from "react";
 import Grid from "@material-ui/core/Grid";
@@ -41,16 +41,12 @@ export default function ChartContainer(props) {
 
     const onLoadMore = () => {
         fetchMore({
-            variables:{
-                cursor: data.allBattedBalls.pageInfo.endCursor
+            variables: {
+                endCursor: data.allBattedBalls.pageInfo.endCursor
             },
             updateQuery: (previousData, newData) => {
-                const oldEdges = previousData.allBattedBalls.edges;
                 const newEdges = newData.fetchMoreResult.allBattedBalls.edges;
                 const pageInfo = newData.fetchMoreResult.allBattedBalls.pageInfo;
-
-                console.log(oldEdges)
-                console.log(newEdges)
 
                 return newEdges.length
                     ? {
@@ -63,14 +59,14 @@ export default function ChartContainer(props) {
                     : previousData;
             }
         })
-        console.log(fetchMore)
     }
-
-    let newData = onLoadMore()
 
     return <div>
         <Grid className={classes.chartFilters} alignItems={"center"} justify={"center"} container>
-            <ChartFilters/>
+            <ChartFilters data={data} onLoadMore={onLoadMore}/>
+        </Grid>
+        <Grid item>
+            <button onClick={() => onLoadMore()}>Load More</button>
         </Grid>
         <Grid className={classes.container} alignItems={"flex-start"} justify={"center"} spacing={2} container>
             <Grid item sm={12} md={6}>
