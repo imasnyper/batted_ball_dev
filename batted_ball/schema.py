@@ -17,5 +17,16 @@ class Query(graphene.ObjectType):
     all_batted_balls = DjangoFilterConnectionField(BattedBallNode)
     distinct_batters = DjangoFilterConnectionField(BattedBallNode)
 
+    # TODO change database to postgres for unique on field capability
+    # otherwise this hackey workaround is needed.
     def resolve_distinct_batters(self, args):
-        return BattedBall.objects.order_by().values('battername').distinct()
+        batted_balls = []
+        all_batted_balls = BattedBall.objects.order_by("battername")
+        for bb in all_batted_balls:
+            if len(batted_balls) > 0:
+                if bb.battername not in [b.battername for b in batted_balls]:
+                    batted_balls.append(bb)
+            else:
+                batted_balls.append(bb)
+
+        return batted_balls
