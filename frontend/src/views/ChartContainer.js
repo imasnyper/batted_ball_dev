@@ -1,5 +1,5 @@
-import {useQuery} from "@apollo/react-hooks";
-import {BATTED_BALLS_QUERY, LAST_BATTED_BALLS} from "../queries";
+import {useLazyQuery, useQuery} from "@apollo/react-hooks";
+import {BATTED_BALLS_QUERY, LAST_BATTED_BALLS, BATTED_BALLS_BETWEEN_DATES} from "../queries";
 import {CircularProgress} from "@material-ui/core";
 import React from "react";
 import Grid from "@material-ui/core/Grid";
@@ -27,19 +27,26 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ChartContainer(props) {
-    const {loading, error, data, fetchMore} = useQuery(BATTED_BALLS_QUERY, {
+    const {loadingAll, errorAll, dataAll, fetchMoreAll} = useQuery(BATTED_BALLS_QUERY, {
         notifyOnNetworkStatusChange: true
     });
+    const {loadingBetween, errorBetween, dataBetween, fetchMoreBetween} = useLazyQuery(
+        BATTED_BALLS_BETWEEN_DATES,
+        {
+            notifyOnNetworkStatusChange: true,
+            variables: {dateRange: "["}
+        }
+    )
 
     const classes = useStyles();
 
-    if (loading) return <CircularProgress className={classes.progress}/>
-    if (error) return <p>Error :(</p>
+    if (loadingAll) return <CircularProgress className={classes.progress}/>
+    if (errorAll) return <p>Error :(</p>
 
     const onLoadMore = () => {
-        fetchMore({
+        fetchMoreAll({
             variables: {
-                endCursor: data.allBattedBalls.pageInfo.endCursor
+                endCursor: dataAll.allBattedBalls.pageInfo.endCursor
             },
             updateQuery: (previousData, newData) => {
                 const newEdges = newData.fetchMoreResult.allBattedBalls.edges;
@@ -64,7 +71,7 @@ export default function ChartContainer(props) {
 
     return <div>
         <Grid className={classes.chartFilters} alignItems={"center"} justify={"center"} container>
-            <ChartFilters data={data} onDateRangeChange={onDateRangeChange}/>
+            <ChartFilters data={dataAll} onDateRangeChange={onDateRangeChange}/>
         </Grid>
         <Grid item>
             <button onClick={() => onLoadMore()}>Load More</button>
@@ -73,14 +80,14 @@ export default function ChartContainer(props) {
             <Grid item sm={12} md={6}>
                 <Grid item>
                     <ResponsiveContainer>
-                        <SprayChart data={data}/>
+                        <SprayChart data={dataAll}/>
                     </ResponsiveContainer>
                 </Grid>
             </Grid>
             <Grid item sm={12} md={6}>
                 <Grid item>
                     <ResponsiveContainer height={600}>
-                        <ZonePlot data={data}/>
+                        <ZonePlot data={dataAll}/>
                     </ResponsiveContainer>
                 </Grid>
             </Grid>

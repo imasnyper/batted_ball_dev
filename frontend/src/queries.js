@@ -91,3 +91,49 @@ export const LAST_BATTED_BALLS = gql`
         }
     }  
 `;
+
+export const BATTED_BALLS_BETWEEN_DATES = gql`
+    query battedBallsBetweenDates($dateRange: List[String]) {
+        battedBallsBetweenDates(dateRange: $dateRange) {
+            edges {
+                node {
+                    id
+                    date, 
+                    gamepk, 
+                    hometeamid, 
+                    hometeamname, 
+                    awayteamid, 
+                    awayteamname, 
+                    parkid, 
+                    park, 
+                    batterid, 
+                    battername, 
+                    batside, 
+                    batterteamid, 
+                    pitcherid, 
+                    pitchername, 
+                    pitcherteamid, 
+                    pitchside, 
+                    balls, 
+                    strikes, 
+                    resultType, 
+                    pitchType, 
+                    pitchSpeed, 
+                    zoneLocationX, 
+                    zoneLocationZ, 
+                    launchSpeed, 
+                    launchVertAng, 
+                    launchHorizAng, 
+                    landingLocationX, 
+                    landingLocationY, 
+                    hangTime
+                }
+                cursor
+            }
+            pageInfo {
+                endCursor
+                hasNextPage
+            }
+        }
+    }
+`

@@ -1,4 +1,5 @@
 import graphene
+from django.db.models import Q
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
@@ -16,7 +17,15 @@ class Query(graphene.ObjectType):
     batted_ball = graphene.relay.Node.Field(BattedBallNode)
     all_batted_balls = DjangoFilterConnectionField(BattedBallNode)
     distinct_batters = DjangoFilterConnectionField(BattedBallNode)
-    date_between = DjangoFilterConnectionField(BattedBallNode)
+    batted_balls_between_dates = DjangoFilterConnectionField(BattedBallNode, date_range=graphene.List(graphene.String))
+
+    def resolve_batted_balls_between_dates(self, args, **kwargs):
+        date_range = kwargs.get("date_range", ["2017-04-01", "2017-04-06"])
+        qs = BattedBall.objects.filter(
+            Q(date__gte=date_range[0]) &
+            Q(date__lt=date_range[1])
+        )
+        return qs
 
     # TODO change database to postgres for unique on field capability
     # otherwise this hackey workaround is needed.

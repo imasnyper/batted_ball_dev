@@ -16,8 +16,10 @@ export default function ChartFilter(props) {
     const classes = useStyles()
     const [minDate, maxDate] = getDataDateRange(props.data)
 
-    const handleChange = (event, newValue) => {
-        props.setValue(newValue)
+    console.log(minDate + ", " + maxDate);
+
+    const handleChange = (event, valueTuple) => {
+        props.onDateRangeChange(valueTuple[0], valueTuple[1])
     }
 
     return <Grid container>
