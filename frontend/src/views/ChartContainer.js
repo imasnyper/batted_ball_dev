@@ -34,10 +34,7 @@ export default function ChartContainer(props) {
     const classes = useStyles();
 
     if (loading) return <CircularProgress className={classes.progress}/>
-    if (error) {
-        console.log(error)
-        return <p>Error :(</p>
-    }
+    if (error) return <p>Error :(</p>
 
     const onLoadMore = () => {
         fetchMore({
@@ -61,9 +58,13 @@ export default function ChartContainer(props) {
         })
     }
 
+    const onDateRangeChange = (startDate, endDate) => {
+
+    }
+
     return <div>
         <Grid className={classes.chartFilters} alignItems={"center"} justify={"center"} container>
-            <ChartFilters data={data} onLoadMore={onLoadMore}/>
+            <ChartFilters data={data} onDateRangeChange={onDateRangeChange}/>
         </Grid>
         <Grid item>
             <button onClick={() => onLoadMore()}>Load More</button>

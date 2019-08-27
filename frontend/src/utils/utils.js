@@ -1,4 +1,4 @@
-export default function organizeData(data, outputDataBaseName, secondUnit) {
+export function organizeData(data, outputDataBaseName, secondUnit) {
     let getResultType = (edge, rType) => {
         if (edge.node.resultType === rType || (edge.node.resultType.includes(rType) || edge.node.resultType === "sac_fly")) {
             let outputData = {};
@@ -25,3 +25,14 @@ export default function organizeData(data, outputDataBaseName, secondUnit) {
 
     return [single, double, triple, home_run, hit_by_pitch, out]
 }
+
+export function getDataDateRange(data) {
+    let dates = data.allBattedBalls.edges.map(edge => new Date(edge.node.date))
+
+    let minDate = new Date(Math.max.apply(null, dates)) / 1000
+    let maxDate = new Date(Math.min.apply(null, dates)) / 1000
+
+    return [minDate, maxDate]
+}
+
+export default [organizeData]

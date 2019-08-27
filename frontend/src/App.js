@@ -24,18 +24,6 @@ const theme = createMuiTheme({
     }
 });
 
-const useStyles = makeStyles(theme => ({
-    container: {
-        marginTop: theme.spacing(1),
-        [theme.breakpoints.up(1500)]: {
-            width: 1400
-        }
-    },
-    chartFilters: {
-        marginTop: theme.spacing(10)
-    }
-}))
-
 function App() {
     return <ThemeProvider theme={theme}>
         <AppHeader/>

@@ -9,7 +9,7 @@ import Scatter from "recharts/es6/cartesian/Scatter";
 import Legend from "recharts/es6/component/Legend";
 import CartesianGrid from "recharts/es6/cartesian/CartesianGrid";
 import ReferenceArea from "recharts/es6/cartesian/ReferenceArea";
-import organizeData from "../utils/organizeData";
+import {organizeData} from "../utils/utils";
 
 const useStyles = makeStyles(theme => ({
     progress: {

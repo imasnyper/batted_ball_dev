@@ -16,10 +16,11 @@ class Query(graphene.ObjectType):
     batted_ball = graphene.relay.Node.Field(BattedBallNode)
     all_batted_balls = DjangoFilterConnectionField(BattedBallNode)
     distinct_batters = DjangoFilterConnectionField(BattedBallNode)
+    date_between = DjangoFilterConnectionField(BattedBallNode)
 
     # TODO change database to postgres for unique on field capability
     # otherwise this hackey workaround is needed.
-    def resolve_distinct_batters(self, args):
+    def resolve_distinct_batters(self, info):
         batted_balls = []
         all_batted_balls = BattedBall.objects.order_by("battername")
         for bb in all_batted_balls:
@@ -30,3 +31,7 @@ class Query(graphene.ObjectType):
                 batted_balls.append(bb)
 
         return batted_balls
+
+    def resolve_date_between(self, info, date_range):
+        return BattedBall.objects.objects.filter(date__range=(start_date, end_date))
+

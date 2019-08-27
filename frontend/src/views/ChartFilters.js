@@ -3,6 +3,7 @@ import {Paper} from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import Slider from "@material-ui/core/Slider";
+import {getDataDateRange} from "../utils/utils";
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -13,11 +14,18 @@ const useStyles = makeStyles(theme => ({
 
 export default function ChartFilter(props) {
     const classes = useStyles()
+    const [minDate, maxDate] = getDataDateRange(props.data)
+
+    const handleChange = (event, newValue) => {
+        props.setValue(newValue)
+    }
 
     return <Grid container>
-        <Slider value={[10, 50]}
+
+        <Slider value={[minDate, maxDate]}
                 valueLabelDisplay={"auto"}
                 aria-labelledby={"range-slider"}
+                onChange={handleChange}
         />
     </Grid>
 }
