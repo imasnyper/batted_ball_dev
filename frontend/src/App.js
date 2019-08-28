@@ -2,9 +2,9 @@ import React from 'react';
 import './App.css';
 import AppHeader from "./views/AppHeader";
 import ChartContainer from "./views/ChartContainer";
-import {createMuiTheme} from '@material-ui/core/styles'
+import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles'
 import Grid from "@material-ui/core/Grid";
-import {ThemeProvider} from '@material-ui/styles'
+// import {ThemeProvider} from '@material-ui/styles'
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const theme = createMuiTheme({
@@ -25,12 +25,12 @@ const theme = createMuiTheme({
 });
 
 function App() {
-    return <ThemeProvider theme={theme}>
+    return <MuiThemeProvider theme={theme}>
         <AppHeader/>
         <Grid container justify={"center"}>
             <ChartContainer/>
         </Grid>
-    </ThemeProvider>;
+    </MuiThemeProvider>;
 }
 
 export default App;

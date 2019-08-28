@@ -6,7 +6,6 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
             outputData[outputDataBaseName + "X"] = Number(edge.node[outputDataBaseName + "X"])
             outputData[outputDataBaseName + secondUnit] = Number(edge.node[outputDataBaseName + secondUnit])
 
-            console.log(outputData.zoneLocationX + ", " + outputData.zoneLocationZ)
             return outputData
         }
         return null
@@ -14,7 +13,7 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
 
     let allBattedBalls = {"single": [], "double": [], "triple": [], "home_run": [], "hit_by_pitch": [], "out": []}
 
-    data.allBattedBalls.edges.forEach(edge => {
+    data.battedBallsBetweenDates.edges.forEach(edge => {
          return ["single", "double", "triple", "home_run", "hit_by_pitch", "out"].forEach(rType => {
              let result = getResultType(edge, rType)
              if (result) {
@@ -30,14 +29,14 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
 }
 
 export function getDataDateRange(data) {
-    let dates = data.allBattedBalls.edges.map(edge => new Date(edge.node.date))
+    let dates = data.battedBallsBetweenDates.edges.map(edge => new Date(edge.node.date))
 
-    let minDate = new Date(Math.min.apply(0, dates)) / 1000
-    let maxDate = new Date(Math.max.apply(0, dates)) / 1000
+    let minDate = new Date(Math.min.apply(0, dates))
+    let maxDate = new Date(Math.max.apply(0, dates))
 
-    console.log(minDate + ", " + maxDate)
-
-    console.log(new Date(minDate * 1000) + ", " + new Date(maxDate * 1000))
+    // console.log(minDate + ", " + maxDate)
+    //
+    // console.log(new Date(minDate * 1000) + ", " + new Date(maxDate * 1000))
 
     return [minDate, maxDate]
 }

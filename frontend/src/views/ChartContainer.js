@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     chartFilters: {
-        marginTop: theme.spacing(10)
+        marginTop: theme.spacing(15)
     },
     progress: {
         margin: theme.spacing(2),
@@ -29,41 +29,33 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function ChartContainer(props) {
-    const {loading, error, data, fetchMore} = useQuery(BATTED_BALLS_QUERY, {
+    const {loading, error, data, fetchMore, refetch} = useQuery(BATTED_BALLS_BETWEEN_DATES, {
         notifyOnNetworkStatusChange: true
     });
-    const {loadingAll, errorAll, dataAll, fetchMoreAll} = {loading, error, data, fetchMore}
-    const {loading, error, data, fetchMore} = useLazyQuery(
-        BATTED_BALLS_BETWEEN_DATES,
-        {
-            notifyOnNetworkStatusChange: true,
-            variables: {dateRange: ""}
-        }
-    )
-
-
 
     const classes = useStyles();
 
     if (loading) return <CircularProgress className={classes.progress}/>
     if (error) return <p>Error :(</p>
 
-    console.log(data)
+    // console.log(data)
+    // console.log(new Date(data.battedBallsBetweenDates.edges[0].node.date))
+    // console.log(new Date(data.battedBallsBetweenDates.edges[data.battedBallsBetweenDates.edges.length - 1].node.date))
 
     const onLoadMore = () => {
         fetchMore({
             variables: {
-                endCursor: data.allBattedBalls.pageInfo.endCursor
+                endCursor: data.battedBallsBetweenDates.pageInfo.endCursor
             },
             updateQuery: (previousData, newData) => {
-                const newEdges = newData.fetchMoreResult.allBattedBalls.edges;
-                const pageInfo = newData.fetchMoreResult.allBattedBalls.pageInfo;
+                const newEdges = newData.fetchMoreResult.battedBallsBetweenDates.edges;
+                const pageInfo = newData.fetchMoreResult.battedBallsBetweenDates.pageInfo;
 
                 return newEdges.length
                     ? {
-                        allBattedBalls: {
-                            __typename: previousData.allBattedBalls.__typename,
-                            edges: [...previousData.allBattedBalls.edges, ...newEdges],
+                        battedBallsBetweenDates: {
+                            __typename: previousData.battedBallsBetweenDates.__typename,
+                            edges: [...previousData.battedBallsBetweenDates.edges, ...newEdges],
                             pageInfo
                         }
                     }
@@ -73,7 +65,17 @@ export default function ChartContainer(props) {
     }
 
     const onDateRangeChange = (startDate, endDate) => {
-
+        console.log(startDate)
+        console.log(endDate)
+        startDate = new Date(startDate)
+        endDate = new Date(endDate)
+        console.log(startDate)
+        console.log(endDate)
+        startDate = String(startDate.toISOString().split("T")[0])
+        endDate = String(endDate.toISOString().split("T")[0])
+        refetch({
+            dateRange: [startDate, endDate]
+        })
     }
 
     return <div>
