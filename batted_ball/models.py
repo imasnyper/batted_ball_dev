@@ -23,14 +23,14 @@ class BattedBall(models.Model):
     result_type = models.CharField(max_length=64)
     pitch_type = models.CharField(max_length=64)
     pitch_speed = models.IntegerField()
-    zone_location_x = models.IntegerField()
-    zone_location_z = models.IntegerField()
-    launch_speed = models.IntegerField()
-    launch_vert_ang = models.IntegerField()
-    launch_horiz_ang = models.IntegerField()
-    landing_location_x = models.IntegerField()
-    landing_location_y = models.IntegerField()
-    hang_time = models.IntegerField()
+    zone_location_x = models.FloatField()
+    zone_location_z = models.FloatField()
+    launch_speed = models.FloatField()
+    launch_vert_ang = models.FloatField()
+    launch_horiz_ang = models.FloatField()
+    landing_location_x = models.FloatField()
+    landing_location_y = models.FloatField()
+    hang_time = models.FloatField()
 
     class Meta:
         db_table = 'batted_ball'

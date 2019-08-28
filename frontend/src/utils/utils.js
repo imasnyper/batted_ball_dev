@@ -2,8 +2,11 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
     let getResultType = (edge, rType) => {
         if (edge.node.resultType === rType || (edge.node.resultType.includes(rType) || edge.node.resultType === "sac_fly")) {
             let outputData = {};
-            outputData[outputDataBaseName + "X"] = edge.node[outputDataBaseName + "X"]
-            outputData[outputDataBaseName + secondUnit] = edge.node[outputDataBaseName + secondUnit]
+
+            outputData[outputDataBaseName + "X"] = Number(edge.node[outputDataBaseName + "X"])
+            outputData[outputDataBaseName + secondUnit] = Number(edge.node[outputDataBaseName + secondUnit])
+
+            console.log(outputData.zoneLocationX + ", " + outputData.zoneLocationZ)
             return outputData
         }
         return null
@@ -38,5 +41,3 @@ export function getDataDateRange(data) {
 
     return [minDate, maxDate]
 }
-
-export default [organizeData]

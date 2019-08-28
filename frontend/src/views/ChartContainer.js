@@ -26,27 +26,34 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+
+
 export default function ChartContainer(props) {
-    const {loadingAll, errorAll, dataAll, fetchMoreAll} = useQuery(BATTED_BALLS_QUERY, {
+    const {loading, error, data, fetchMore} = useQuery(BATTED_BALLS_QUERY, {
         notifyOnNetworkStatusChange: true
     });
-    const {loadingBetween, errorBetween, dataBetween, fetchMoreBetween} = useLazyQuery(
+    const {loadingAll, errorAll, dataAll, fetchMoreAll} = {loading, error, data, fetchMore}
+    const {loading, error, data, fetchMore} = useLazyQuery(
         BATTED_BALLS_BETWEEN_DATES,
         {
             notifyOnNetworkStatusChange: true,
-            variables: {dateRange: "["}
+            variables: {dateRange: ""}
         }
     )
 
+
+
     const classes = useStyles();
 
-    if (loadingAll) return <CircularProgress className={classes.progress}/>
-    if (errorAll) return <p>Error :(</p>
+    if (loading) return <CircularProgress className={classes.progress}/>
+    if (error) return <p>Error :(</p>
+
+    console.log(data)
 
     const onLoadMore = () => {
-        fetchMoreAll({
+        fetchMore({
             variables: {
-                endCursor: dataAll.allBattedBalls.pageInfo.endCursor
+                endCursor: data.allBattedBalls.pageInfo.endCursor
             },
             updateQuery: (previousData, newData) => {
                 const newEdges = newData.fetchMoreResult.allBattedBalls.edges;
@@ -71,7 +78,7 @@ export default function ChartContainer(props) {
 
     return <div>
         <Grid className={classes.chartFilters} alignItems={"center"} justify={"center"} container>
-            <ChartFilters data={dataAll} onDateRangeChange={onDateRangeChange}/>
+            <ChartFilters data={data} onDateRangeChange={onDateRangeChange}/>
         </Grid>
         <Grid item>
             <button onClick={() => onLoadMore()}>Load More</button>
@@ -80,14 +87,14 @@ export default function ChartContainer(props) {
             <Grid item sm={12} md={6}>
                 <Grid item>
                     <ResponsiveContainer>
-                        <SprayChart data={dataAll}/>
+                        <SprayChart data={data}/>
                     </ResponsiveContainer>
                 </Grid>
             </Grid>
             <Grid item sm={12} md={6}>
                 <Grid item>
                     <ResponsiveContainer height={600}>
-                        <ZonePlot data={dataAll}/>
+                        <ZonePlot data={data}/>
                     </ResponsiveContainer>
                 </Grid>
             </Grid>

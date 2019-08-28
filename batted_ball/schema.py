@@ -41,6 +41,3 @@ class Query(graphene.ObjectType):
 
         return batted_balls
 
-    def resolve_date_between(self, info, date_range):
-        return BattedBall.objects.objects.filter(date__range=(start_date, end_date))
-

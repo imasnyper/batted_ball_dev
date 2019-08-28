@@ -1,40 +1,44 @@
 import gql from 'graphql-tag'
 
+export const returnFields = `
+    id
+    date
+    gamepk
+    hometeamid
+    hometeamname
+    awayteamid
+    awayteamname
+    parkid
+    park
+    batterid
+    battername
+    batside
+    batterteamid
+    pitcherid
+    pitchername
+    pitcherteamid
+    pitchside
+    balls
+    strikes
+    resultType
+    pitchType
+    pitchSpeed
+    zoneLocationX
+    zoneLocationZ
+    launchSpeed
+    launchVertAng
+    launchHorizAng
+    landingLocationX
+    landingLocationY
+    hangTime
+`;
+
 export const BATTED_BALLS_QUERY = gql`
     query allBattedBalls($endCursor: String) {
         allBattedBalls(first:100, after: $endCursor){
             edges {
                 node {
-                    id
-                    date, 
-                    gamepk, 
-                    hometeamid, 
-                    hometeamname, 
-                    awayteamid, 
-                    awayteamname, 
-                    parkid, 
-                    park, 
-                    batterid, 
-                    battername, 
-                    batside, 
-                    batterteamid, 
-                    pitcherid, 
-                    pitchername, 
-                    pitcherteamid, 
-                    pitchside, 
-                    balls, 
-                    strikes, 
-                    resultType, 
-                    pitchType, 
-                    pitchSpeed, 
-                    zoneLocationX, 
-                    zoneLocationZ, 
-                    launchSpeed, 
-                    launchVertAng, 
-                    launchHorizAng, 
-                    landingLocationX, 
-                    landingLocationY, 
-                    hangTime
+                    ${returnFields}
                 }
                 cursor
             }
@@ -51,36 +55,7 @@ export const LAST_BATTED_BALLS = gql`
         allBattedBalls(last:100, after: $endCursor){
             edges {
                 node {
-                    id
-                    date, 
-                    gamepk, 
-                    hometeamid, 
-                    hometeamname, 
-                    awayteamid, 
-                    awayteamname, 
-                    parkid, 
-                    park, 
-                    batterid, 
-                    battername, 
-                    batside, 
-                    batterteamid, 
-                    pitcherid, 
-                    pitchername, 
-                    pitcherteamid, 
-                    pitchside, 
-                    balls, 
-                    strikes, 
-                    resultType, 
-                    pitchType, 
-                    pitchSpeed, 
-                    zoneLocationX, 
-                    zoneLocationZ, 
-                    launchSpeed, 
-                    launchVertAng, 
-                    launchHorizAng, 
-                    landingLocationX, 
-                    landingLocationY, 
-                    hangTime
+                    ${returnFields}
                 }
                 cursor
             }
@@ -93,40 +68,11 @@ export const LAST_BATTED_BALLS = gql`
 `;
 
 export const BATTED_BALLS_BETWEEN_DATES = gql`
-    query battedBallsBetweenDates($dateRange: List[String]) {
+    query battedBallsBetweenDates($dateRange: [String]) {
         battedBallsBetweenDates(dateRange: $dateRange) {
             edges {
                 node {
-                    id
-                    date, 
-                    gamepk, 
-                    hometeamid, 
-                    hometeamname, 
-                    awayteamid, 
-                    awayteamname, 
-                    parkid, 
-                    park, 
-                    batterid, 
-                    battername, 
-                    batside, 
-                    batterteamid, 
-                    pitcherid, 
-                    pitchername, 
-                    pitcherteamid, 
-                    pitchside, 
-                    balls, 
-                    strikes, 
-                    resultType, 
-                    pitchType, 
-                    pitchSpeed, 
-                    zoneLocationX, 
-                    zoneLocationZ, 
-                    launchSpeed, 
-                    launchVertAng, 
-                    launchHorizAng, 
-                    landingLocationX, 
-                    landingLocationY, 
-                    hangTime
+                    ${returnFields}
                 }
                 cursor
             }
@@ -136,4 +82,4 @@ export const BATTED_BALLS_BETWEEN_DATES = gql`
             }
         }
     }
-`
+`;
