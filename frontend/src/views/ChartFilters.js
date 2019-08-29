@@ -36,10 +36,12 @@ const useStyles = makeStyles(theme => ({
 export default function ChartFilter(props) {
     console.log(props.data)
     const classes = useStyles()
-    const [minDate, maxDate] = getDataDateRange(props.data)
+    let [minDate, maxDate] = getDataDateRange(props.data)
+
+    minDate = new Date(minDate)
+    maxDate = new Date(maxDate)
 
     const handleChange = (valueTuple) => {
-        console.log(valueTuple)
         props.onDateRangeChange(valueTuple[0] * 1000, valueTuple[1] * 1000)
     }
 
@@ -48,7 +50,7 @@ export default function ChartFilter(props) {
                min={new Date("2017-04-03") / 1000}
                max={new Date("2017-10-10") / 1000}
                step={86400}
-               onAfterChange={(values) => handleChange(values)}
+               onAfterChange={values => handleChange(values)}
                tipFormatter={value => `${new Date(value * 1000)}`}
         />
     </Grid>

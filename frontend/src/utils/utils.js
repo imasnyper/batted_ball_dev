@@ -34,9 +34,11 @@ export function getDataDateRange(data) {
     let minDate = new Date(Math.min.apply(0, dates))
     let maxDate = new Date(Math.max.apply(0, dates))
 
-    // console.log(minDate + ", " + maxDate)
-    //
-    // console.log(new Date(minDate * 1000) + ", " + new Date(maxDate * 1000))
+    minDate = new Date(minDate)
+    maxDate = new Date(maxDate)
+
+    minDate = String(minDate.toISOString().split("T")[0])
+    maxDate = String(maxDate.toISOString().split("T")[0])
 
     return [minDate, maxDate]
 }

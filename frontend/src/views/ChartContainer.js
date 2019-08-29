@@ -8,6 +8,7 @@ import SprayChart from "./SprayChart";
 import ZonePlot from "./ZonePlot";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ResponsiveContainer from "recharts/es6/component/ResponsiveContainer";
+import {getDataDateRange} from "../utils/utils";
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -43,9 +44,11 @@ export default function ChartContainer(props) {
     // console.log(new Date(data.battedBallsBetweenDates.edges[data.battedBallsBetweenDates.edges.length - 1].node.date))
 
     const onLoadMore = () => {
+        const [startDate, endDate] = getDataDateRange(data)
         fetchMore({
             variables: {
-                endCursor: data.battedBallsBetweenDates.pageInfo.endCursor
+                cursor: data.battedBallsBetweenDates.pageInfo.endCursor,
+                dateRange: [startDate, endDate]
             },
             updateQuery: (previousData, newData) => {
                 const newEdges = newData.fetchMoreResult.battedBallsBetweenDates.edges;
@@ -64,19 +67,10 @@ export default function ChartContainer(props) {
         })
     }
 
-    const onDateRangeChange = (startDate, endDate) => {
-        console.log(startDate)
-        console.log(endDate)
-        startDate = new Date(startDate)
-        endDate = new Date(endDate)
-        console.log(startDate)
-        console.log(endDate)
-        startDate = String(startDate.toISOString().split("T")[0])
-        endDate = String(endDate.toISOString().split("T")[0])
+    const onDateRangeChange = (startDate, endDate) =>
         refetch({
             dateRange: [startDate, endDate]
         })
-    }
 
     return <div>
         <Grid className={classes.chartFilters} alignItems={"center"} justify={"center"} container>
