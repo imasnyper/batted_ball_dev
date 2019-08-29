@@ -1,7 +1,7 @@
 import {useLazyQuery, useQuery} from "@apollo/react-hooks";
 import {BATTED_BALLS_QUERY, LAST_BATTED_BALLS, BATTED_BALLS_BETWEEN_DATES} from "../queries";
 import {CircularProgress} from "@material-ui/core";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Grid from "@material-ui/core/Grid";
 import ChartFilters from "./ChartFilters";
 import SprayChart from "./SprayChart";

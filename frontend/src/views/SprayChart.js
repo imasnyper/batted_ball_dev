@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Typography from "@material-ui/core/Typography";
 import ScatterChart from "recharts/es6/chart/ScatterChart";
@@ -11,19 +11,21 @@ import { organizeData } from "../utils/utils";
 import ReferenceDot from "recharts/es6/cartesian/ReferenceDot";
 
 
-const useStyles = makeStyles(theme => ({
-    progress: {
-        margin: theme.spacing(2)
-    },
-    chartBackground: {
-        backgroundImage: `url("https://prod-gameday.mlbstatic.com/responsive-gameday-assets/1.2.0/images/fields/14.svg")`,
-        backgroundSize: "500px 500px",
-        backgroundPosition: "91px 40px",
-        backgroundRepeat: "no-repeat"
-    }
-}));
+
 
 export default function SprayChart(props) {
+    const useStyles = makeStyles(theme => ({
+        progress: {
+            margin: theme.spacing(2)
+        },
+        chartBackground: {
+            backgroundImage: `url("https://prod-gameday.mlbstatic.com/responsive-gameday-assets/1.2.0/images/fields/14.svg")`,
+            backgroundSize: "500px 500px",
+            backgroundPosition: "91px 40px",
+            backgroundRepeat: "no-repeat"
+        }
+    }));
+
     const dataBaseName = "landingLocation"
     const [singles, doubles, triples, homeRuns, hitByPitch, outs] = organizeData(props.data, dataBaseName, "Y")
     const classes = useStyles()
