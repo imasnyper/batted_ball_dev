@@ -1,5 +1,5 @@
-import {useLazyQuery, useQuery} from "@apollo/react-hooks";
-import {BATTED_BALLS_QUERY, LAST_BATTED_BALLS, BATTED_BALLS_BETWEEN_DATES} from "../queries";
+import {useQuery} from "@apollo/react-hooks";
+import {BATTED_BALLS_BETWEEN_DATES} from "../queries";
 import {CircularProgress} from "@material-ui/core";
 import React, {useEffect, useState} from "react";
 import Grid from "@material-ui/core/Grid";
@@ -30,10 +30,6 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function ChartContainer(props) {
-    const {loading, error, data, fetchMore, refetch} = useQuery(BATTED_BALLS_BETWEEN_DATES, {
-        notifyOnNetworkStatusChange: true
-    });
-
     const onLoadMore = () => {
         const [startDate, endDate] = dateRange
         console.log(startDate, endDate)
@@ -47,11 +43,14 @@ export default function ChartContainer(props) {
                 console.log(previousData)
                 console.log(fetchMoreResult)
                 const newEdges = fetchMoreResult.battedBallsBetweenDates.edges;
+                const prevPageInfo = previousData.battedBallsBetweenDates.pageInfo
                 const pageInfo = fetchMoreResult.battedBallsBetweenDates.pageInfo;
 
+                console.log("**************")
                 console.log(newEdges)
+                console.log("**************")
 
-                return newEdges.length
+                return (newEdges.length && prevPageInfo.hasNextPage)
                     ? {
                         battedBallsBetweenDates: {
                             __typename: previousData.battedBallsBetweenDates.__typename,
@@ -64,6 +63,12 @@ export default function ChartContainer(props) {
         })
     }
 
+    const {loading, error, data, fetchMore, refetch} = useQuery(BATTED_BALLS_BETWEEN_DATES, {
+        notifyOnNetworkStatusChange: true
+    });
+
+    //TODO learn more better
+    //
     useEffect(() => {
         if(data && data.battedBallsBetweenDates && data.battedBallsBetweenDates.edges.length < 1000 && data.battedBallsBetweenDates.pageInfo.hasNextPage) { onLoadMore() }
     })
@@ -97,7 +102,11 @@ export default function ChartContainer(props) {
             />
         </Grid>
         <Grid item>
-            <button onClick={() => onLoadMore()}>Load More</button>
+            {data.battedBallsBetweenDates.pageInfo.hasNextPage ?
+                <button onClick={() => onLoadMore()}>Load More</button>
+                :
+                <p>All results loaded!</p>
+            }
         </Grid>
         <Grid className={classes.container} alignItems={"flex-start"} justify={"center"} spacing={2} container>
             <Grid item sm={12} md={6}>

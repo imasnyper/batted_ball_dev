@@ -8,9 +8,6 @@ import YAxis from "recharts/es6/cartesian/YAxis";
 import Tooltip from "recharts/es6/component/Tooltip";
 import Legend from "recharts/es6/component/Legend";
 import { organizeData } from "../utils/utils";
-import ReferenceDot from "recharts/es6/cartesian/ReferenceDot";
-
-
 
 
 export default function SprayChart(props) {
