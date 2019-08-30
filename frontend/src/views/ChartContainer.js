@@ -8,7 +8,7 @@ import SprayChart from "./SprayChart";
 import ZonePlot from "./ZonePlot";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ResponsiveContainer from "recharts/es6/component/ResponsiveContainer";
-import {getDataDateRange} from "../utils/utils";
+import {convertDateRange} from "../utils/utils";
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -34,25 +34,22 @@ export default function ChartContainer(props) {
         notifyOnNetworkStatusChange: true
     });
 
-    const classes = useStyles();
-
-    if (loading) return <CircularProgress className={classes.progress}/>
-    if (error) return <p>Error :(</p>
-
-    // console.log(data)
-    // console.log(new Date(data.battedBallsBetweenDates.edges[0].node.date))
-    // console.log(new Date(data.battedBallsBetweenDates.edges[data.battedBallsBetweenDates.edges.length - 1].node.date))
-
     const onLoadMore = () => {
-        const [startDate, endDate] = getDataDateRange(data)
+        const [startDate, endDate] = dateRange
+        console.log(startDate, endDate)
+        console.log(typeof data.battedBallsBetweenDates.pageInfo.endCursor)
         fetchMore({
             variables: {
-                cursor: data.battedBallsBetweenDates.pageInfo.endCursor,
+                endCursor: data.battedBallsBetweenDates.pageInfo.endCursor,
                 dateRange: [startDate, endDate]
             },
-            updateQuery: (previousData, newData) => {
-                const newEdges = newData.fetchMoreResult.battedBallsBetweenDates.edges;
-                const pageInfo = newData.fetchMoreResult.battedBallsBetweenDates.pageInfo;
+            updateQuery: (previousData, {fetchMoreResult}) => {
+                console.log(previousData)
+                console.log(fetchMoreResult)
+                const newEdges = fetchMoreResult.battedBallsBetweenDates.edges;
+                const pageInfo = fetchMoreResult.battedBallsBetweenDates.pageInfo;
+
+                console.log(newEdges)
 
                 return newEdges.length
                     ? {
@@ -67,32 +64,51 @@ export default function ChartContainer(props) {
         })
     }
 
-    const onDateRangeChange = (startDate, endDate) =>
+    useEffect(() => {
+        if(data && data.battedBallsBetweenDates && data.battedBallsBetweenDates.edges.length < 1000 && data.battedBallsBetweenDates.pageInfo.hasNextPage) { onLoadMore() }
+    })
+
+    const [dateRange, setDateRange] = useState(["2017-04-02", "2017-04-05"])
+
+    const classes = useStyles();
+
+    if (loading) return <CircularProgress className={classes.progress}/>
+    if (error) return <p>Error :(</p>
+
+    console.log(data.battedBallsBetweenDates)
+    console.log(data.battedBallsBetweenDates.pageInfo.endCursor)
+
+
+
+    const onDateRangeChange = (startDate, endDate) => {
+        const [sD, eD] = convertDateRange([startDate, endDate])
+        setDateRange([sD, eD])
         refetch({
-            dateRange: [startDate, endDate]
+            dateRange: [sD, eD]
         })
+    }
 
     return <div>
         <Grid className={classes.chartFilters} alignItems={"center"} justify={"center"} container>
-            <ChartFilters data={data} onDateRangeChange={onDateRangeChange}/>
+            <ChartFilters
+                dateRange={dateRange}
+                data={data}
+                onDateRangeChange={onDateRangeChange}
+            />
         </Grid>
         <Grid item>
             <button onClick={() => onLoadMore()}>Load More</button>
         </Grid>
         <Grid className={classes.container} alignItems={"flex-start"} justify={"center"} spacing={2} container>
             <Grid item sm={12} md={6}>
-                <Grid item>
-                    <ResponsiveContainer>
-                        <SprayChart data={data}/>
-                    </ResponsiveContainer>
-                </Grid>
+                <ResponsiveContainer>
+                    <SprayChart data={data}/>
+                </ResponsiveContainer>
             </Grid>
             <Grid item sm={12} md={6}>
-                <Grid item>
-                    <ResponsiveContainer height={600}>
-                        <ZonePlot data={data}/>
-                    </ResponsiveContainer>
-                </Grid>
+                <ResponsiveContainer height={600}>
+                    <ZonePlot data={data}/>
+                </ResponsiveContainer>
             </Grid>
         </Grid>
     </div>

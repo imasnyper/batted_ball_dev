@@ -68,8 +68,8 @@ export const LAST_BATTED_BALLS = gql`
 `;
 
 export const BATTED_BALLS_BETWEEN_DATES = gql`
-    query battedBallsBetweenDates($dateRange: [String]) {
-        battedBallsBetweenDates(first: 100, dateRange: $dateRange) {
+    query battedBallsBetweenDates($dateRange: [String], $endCursor: String) {
+        battedBallsBetweenDates(first: 100, after: $endCursor, dateRange: $dateRange) {
             edges {
                 node {
                     ${returnFields}

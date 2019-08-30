@@ -2,7 +2,6 @@ import React from 'react';
 import {Paper} from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
-import {getDataDateRange} from "../utils/utils";
 import Slider from 'rc-slider';
 import Tooltip from 'rc-tooltip'
 import 'rc-slider/assets/index.css'
@@ -34,9 +33,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ChartFilter(props) {
-    console.log(props.data)
     const classes = useStyles()
-    let [minDate, maxDate] = getDataDateRange(props.data)
+    let [minDate, maxDate] = props.dateRange
 
     minDate = new Date(minDate)
     maxDate = new Date(maxDate)

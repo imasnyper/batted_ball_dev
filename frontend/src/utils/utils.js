@@ -42,3 +42,20 @@ export function getDataDateRange(data) {
 
     return [minDate, maxDate]
 }
+
+export function convertDateRange(dateRange) {
+    //convert Date objects into ISO Date strings for use in GraphQL queries
+    let [minDate, maxDate] = dateRange
+
+    console.log(minDate, maxDate)
+
+    minDate = new Date(minDate)
+    maxDate = new Date(maxDate)
+
+    minDate = String(minDate.toISOString().split("T")[0])
+    maxDate = String(maxDate.toISOString().split("T")[0])
+
+    console.log(minDate, maxDate)
+
+    return [minDate, maxDate]
+}

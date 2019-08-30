@@ -18,11 +18,15 @@ class BattedBallNode(DjangoObjectType):
     def get_node(cls, info, id):
         return BattedBall.objects.get(id)
 
+
 class Query(graphene.ObjectType):
     batted_ball = graphene.relay.Node.Field(BattedBallNode)
     all_batted_balls = DjangoFilterConnectionField(BattedBallNode)
     distinct_batters = DjangoFilterConnectionField(BattedBallNode)
-    batted_balls_between_dates = DjangoFilterConnectionField(BattedBallNode, date_range=graphene.List(graphene.String))
+    batted_balls_between_dates = DjangoFilterConnectionField(
+        BattedBallNode,
+        date_range=graphene.List(graphene.String),
+    )
 
     def resolve_batted_balls_between_dates(self, args, **kwargs):
         date_range = kwargs.get("date_range", ["2017-04-01", "2017-04-05"])
