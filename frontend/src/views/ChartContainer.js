@@ -50,7 +50,7 @@ export default function ChartContainer(props) {
                 console.log(newEdges)
                 console.log("**************")
 
-                return (newEdges.length && prevPageInfo.hasNextPage)
+                return (newEdges.length && prevPageInfo.hasNextPage && prevPageInfo.endCursor !== pageInfo.endCursor)
                     ? {
                         battedBallsBetweenDates: {
                             __typename: previousData.battedBallsBetweenDates.__typename,
@@ -70,7 +70,15 @@ export default function ChartContainer(props) {
     //TODO learn more better
     //
     useEffect(() => {
-        if(data && data.battedBallsBetweenDates && data.battedBallsBetweenDates.edges.length < 1000 && data.battedBallsBetweenDates.pageInfo.hasNextPage) { onLoadMore() }
+        if(
+            data &&
+            data.battedBallsBetweenDates &&
+            data.battedBallsBetweenDates.edges.length < 1000 &&
+            data.battedBallsBetweenDates.pageInfo.hasNextPage
+        )
+        {
+            onLoadMore()
+        }
     })
 
     const [dateRange, setDateRange] = useState(["2017-04-02", "2017-04-05"])
@@ -83,7 +91,9 @@ export default function ChartContainer(props) {
     console.log(data.battedBallsBetweenDates)
     console.log(data.battedBallsBetweenDates.pageInfo.endCursor)
 
-
+    const onLoadAll = () => {
+        while (data.battedBallsBetweenDates.pageInfo.hasNextPage) { onLoadMore() }
+    }
 
     const onDateRangeChange = (startDate, endDate) => {
         const [sD, eD] = convertDateRange([startDate, endDate])
@@ -102,8 +112,14 @@ export default function ChartContainer(props) {
             />
         </Grid>
         <Grid item>
+            <p># Batted Balls Loaded: {data.battedBallsBetweenDates.edges.length}</p>
+        </Grid>
+        <Grid item>
             {data.battedBallsBetweenDates.pageInfo.hasNextPage ?
-                <button onClick={() => onLoadMore()}>Load More</button>
+                <div>
+                    <button onClick={() => onLoadMore()}>Load More</button>
+                    <button onClick={() => onLoadAll()}>Load All</button>
+                </div>
                 :
                 <p>All results loaded!</p>
             }
