@@ -4,8 +4,6 @@ import AppHeader from "./views/AppHeader";
 import ChartContainer from "./views/ChartContainer";
 import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles'
 import Grid from "@material-ui/core/Grid";
-// import {ThemeProvider} from '@material-ui/styles'
-import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const theme = createMuiTheme({
     palette: {

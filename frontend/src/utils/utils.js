@@ -28,6 +28,17 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
     return [single, double, triple, home_run, hit_by_pitch, out]
 }
 
+export function getBatterNames(edges, edgeType) {
+    let allBatterNames = []
+    edges.forEach(edge => {
+        const playerName = edgeType === "batter" ? edge.node.batter.player.name : edge.node.player.name
+        if (!allBatterNames.includes(playerName)) {
+            allBatterNames.push(playerName)
+        }
+    })
+    return allBatterNames
+}
+
 export function getDataDateRange(data) {
     let dates = data.battedBallsBetweenDates.edges.map(edge => new Date(edge.node.date))
 
