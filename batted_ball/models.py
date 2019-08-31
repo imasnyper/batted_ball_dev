@@ -1,23 +1,45 @@
 from django.db import models
 
 
+class Team(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=64)
+
+
+class Park(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=64)
+
+
+class Player(models.Model):
+    RIGHT = "R"
+    LEFT = "L"
+    BAT_THROW_SIDE = [(RIGHT, "Right"), (LEFT, "Left")]
+
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=64)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
+    side = models.CharField(max_length=1, choices=BAT_THROW_SIDE, null=True)
+
+
+class Batter(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, null=True)
+
+
+class Pitcher(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, null=True)
+
+
 class BattedBall(models.Model):
     date = models.DateField()
     gamepk = models.IntegerField()
-    hometeamid = models.IntegerField()
-    hometeamname = models.CharField(max_length=64)
-    awayteamid = models.IntegerField()
-    awayteamname = models.CharField(max_length=64)
-    parkid = models.IntegerField()
-    park = models.CharField(max_length=64)
-    batterid = models.IntegerField()
-    battername = models.CharField(max_length=64)
-    batside = models.CharField(max_length=64)
-    batterteamid = models.CharField(max_length=64)
-    pitcherid = models.IntegerField()
-    pitchername = models.CharField(max_length=64)
-    pitcherteamid = models.IntegerField()
-    pitchside = models.CharField(max_length=64)
+    home_team = models.ForeignKey(
+        Team, on_delete=models.CASCADE, null=True, related_name="home")
+    away_team = models.ForeignKey(
+        Team, on_delete=models.CASCADE, null=True, related_name="away")
+    park = models.ForeignKey(Park, on_delete=models.CASCADE, null=True)
+    batter = models.ForeignKey(Batter, on_delete=models.CASCADE, null=True)
+    pitcher = models.ForeignKey(Pitcher, on_delete=models.CASCADE, null=True)
     balls = models.IntegerField()
     strikes = models.IntegerField()
     result_type = models.CharField(max_length=64)

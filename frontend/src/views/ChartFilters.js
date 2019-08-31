@@ -4,6 +4,9 @@ import Grid from "@material-ui/core/Grid";
 import Slider from 'rc-slider';
 import Tooltip from 'rc-tooltip'
 import 'rc-slider/assets/index.css'
+import BatterFilter from "../components/BatterFilter";
+import {useQuery} from "@apollo/react-hooks";
+import {ALL_BATTERS} from "../queries";
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip
 const Range = createSliderWithTooltip(Slider.Range)
@@ -38,8 +41,12 @@ export default function ChartFilter(props) {
     minDate = new Date(minDate)
     maxDate = new Date(maxDate)
 
-    const handleChange = (valueTuple) => {
+    const handleDateChange = (valueTuple) => {
         props.onDateRangeChange(valueTuple[0] * 1000, valueTuple[1] * 1000)
+    }
+
+    const handleBatterChange = (batters) => {
+        props.onBatterChange(batters)
     }
 
     return <Grid container>
@@ -47,10 +54,15 @@ export default function ChartFilter(props) {
                min={new Date("2017-04-03") / 1000}
                max={new Date("2017-10-10") / 1000}
                step={86400}
-               onAfterChange={values => handleChange(values)}
+               onAfterChange={values => handleDateChange(values)}
                tipFormatter={value => `${new Date(value * 1000)}`}
         />
+        <BatterFilter
+            apolloClient={props.apolloClient}
+            onBatterChange={handleBatterChange}
+            data={props.data}
+            batters={props.batters}
+        />
+        <p># Batted Balls Loaded: {props.data.battedBallsBetweenDates.edges.length}</p>
     </Grid>
 }
-
-{/*<div onClick={() => props.onDateRangeChange(minDate, maxDate)}>Click to change dates?</div>*/}
