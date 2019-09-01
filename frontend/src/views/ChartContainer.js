@@ -1,5 +1,5 @@
 import {useQuery} from "@apollo/react-hooks";
-import {BATTED_BALLS_BETWEEN_DATES} from "../utils/queries";
+import {BATTED_BALLS} from "../utils/queries";
 import {CircularProgress, Typography} from "@material-ui/core";
 import React, {useEffect, useState} from "react";
 import Grid from "@material-ui/core/Grid";
@@ -35,18 +35,18 @@ export default function ChartContainer(props) {
         const [startDate, endDate] = dateRange
         console.log(batters)
         fetchMore({
-            query: BATTED_BALLS_BETWEEN_DATES,
+            query: BATTED_BALLS,
             variables: {
-                endCursor: data.battedBallsBetweenDates.pageInfo.endCursor,
+                endCursor: data.battedBalls.pageInfo.endCursor,
                 dateRange: [startDate, endDate],
                 batters: batters,
                 pitchers: pitchers,
                 pitcherTeams: pitcherTeams,
             },
             updateQuery: (previousData, {fetchMoreResult}) => {
-                const newEdges = fetchMoreResult.battedBallsBetweenDates.edges;
-                const prevPageInfo = previousData.battedBallsBetweenDates.pageInfo
-                const pageInfo = fetchMoreResult.battedBallsBetweenDates.pageInfo;
+                const newEdges = fetchMoreResult.battedBalls.edges;
+                const prevPageInfo = previousData.battedBalls.pageInfo
+                const pageInfo = fetchMoreResult.battedBalls.pageInfo;
 
                 console.log("**************")
                 console.log(newEdges)
@@ -54,9 +54,9 @@ export default function ChartContainer(props) {
 
                 return (newEdges.length && prevPageInfo.hasNextPage && prevPageInfo.endCursor !== pageInfo.endCursor)
                     ? {
-                        battedBallsBetweenDates: {
-                            __typename: previousData.battedBallsBetweenDates.__typename,
-                            edges: [...previousData.battedBallsBetweenDates.edges, ...newEdges],
+                        battedBalls: {
+                            __typename: previousData.battedBalls.__typename,
+                            edges: [...previousData.battedBalls.edges, ...newEdges],
                             pageInfo
                         }
                     }
@@ -71,7 +71,7 @@ export default function ChartContainer(props) {
     const [pitcherTeams, setPitcherTeams] = useState([])
 
     const {loading, error, data, fetchMore, refetch} = useQuery(
-        BATTED_BALLS_BETWEEN_DATES, {
+        BATTED_BALLS, {
         notifyOnNetworkStatusChange: true,
         variables: {
             dateRange: dateRange,
@@ -82,18 +82,24 @@ export default function ChartContainer(props) {
         if(!loading && !error) {
             if (
                 data &&
-                data.battedBallsBetweenDates &&
-                data.battedBallsBetweenDates.edges.length < 200 &&
-                data.battedBallsBetweenDates.pageInfo.hasNextPage
+                data.battedBalls &&
+                data.battedBalls.edges.length < 200 &&
+                data.battedBalls.pageInfo.hasNextPage
             ) {
-                const newBatters = batters.length === 0 ? getPlayerNames(data.battedBallsBetweenDates.edges, 'batter') : batters;
-                const newPitchers = pitchers.length === 0 ? getPlayerNames(data.battedBallsBetweenDates.edges, 'pitcher') : pitchers;
-                const newPitcherTeams = pitcherTeams.length === 0 ? getPlayerTeamNames(data.battedBallsBetweenDates.edges, 'pitcher') : pitcherTeams;
+                const newBatters = batters.length === 0 ?
+                    getPlayerNames(data.battedBalls.edges, 'batter') :
+                    batters;
+                const newPitchers = pitchers.length === 0 ?
+                    getPlayerNames(data.battedBalls.edges, 'pitcher') :
+                    pitchers;
+                const newPitcherTeams = pitcherTeams.length === 0 ?
+                    getPlayerTeamNames(data.battedBalls.edges, 'pitcher') :
+                    pitcherTeams;
 
                 setBatters(newBatters);
                 setPitchers(newPitchers);
                 setPitcherTeams(newPitcherTeams);
-                // onLoadMore()
+                // onLoadMore();
             }
         }
     }, [batters, data, error, loading, pitcherTeams, pitchers]);
@@ -106,21 +112,22 @@ export default function ChartContainer(props) {
     // const onLoadAll = () => {
     //     while (data.battedBallsBetweenDates.pageInfo.hasNextPage) { onLoadMore() }
     // }
+    console.log(pitcherTeams);
 
 
     const onDateRangeChange = (startDate, endDate) => {
-        const [sD, eD] = convertDateRange([startDate, endDate])
-        setDateRange([sD, eD])
+        const [sD, eD] = convertDateRange([startDate, endDate]);
+        setDateRange([sD, eD]);
         refetch({
             dateRange: [sD, eD],
             batters: batters,
             pitchers: pitchers,
             pitcherTeams: pitcherTeams,
         })
-    }
+    };
 
     const onBatterChange = (newBatters) => {
-        setBatters(newBatters)
+        setBatters(newBatters);
         refetch({
                 dateRange: dateRange,
                 batters: newBatters,
@@ -128,11 +135,11 @@ export default function ChartContainer(props) {
                 pitcherTeams: pitcherTeams,
             }
         )
-    }
+    };
 
     const onPitcherChange = (newPitchers) => {
-        console.log(batters)
-        setPitchers(newPitchers)
+        console.log(batters);
+        setPitchers(newPitchers);
         refetch({
                 dateRange: dateRange,
                 pitchers: newPitchers,
@@ -140,10 +147,10 @@ export default function ChartContainer(props) {
                 pitcherTeams: pitcherTeams,
             }
         )
-    }
+    };
 
     const onPitcherTeamChange = (newPitcherTeams) => {
-        setPitcherTeams(newPitcherTeams)
+        setPitcherTeams(newPitcherTeams);
         refetch({
                 dateRange: dateRange,
                 pitchers: newPitcherTeams,
@@ -151,7 +158,7 @@ export default function ChartContainer(props) {
                 pitcherTeams: pitcherTeams,
             }
         )
-    }
+    };
 
     return <div>
         <Grid className={classes.chartFilters} alignItems={"center"} justify={"center"} container>
@@ -168,16 +175,22 @@ export default function ChartContainer(props) {
             />
         </Grid>
         <Grid item>
-            {data.battedBallsBetweenDates.pageInfo.hasNextPage ?
+            {data.battedBalls.pageInfo.hasNextPage ?
                 <div>
-                    <Button onClick={() => onLoadMore()}>Load More</Button>
+                    <Button
+                        onClick={() => onLoadMore()}
+                        variant="contained"
+                        color="secondary"
+                    >
+                        Load More
+                    </Button>
                     {/*<Button onClick={() => onLoadAll()}>Load All</Button>*/}
                 </div>
                 :
                 <p>All results loaded!</p>
             }
         </Grid>
-        <Typography variant="subtitle1">Batted Balls Plotted: {data.battedBallsBetweenDates.edges.length}</Typography>
+        <Typography variant="subtitle1">Batted Balls Plotted: {data.battedBalls.edges.length}</Typography>
         <Grid className={classes.container} alignItems={"flex-start"} justify={"center"} spacing={2} container>
             <Grid item sm={12} md={6}>
                 <ResponsiveContainer>

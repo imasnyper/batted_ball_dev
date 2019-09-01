@@ -37,7 +37,7 @@ export default function PitcherFilter(props) {
     // set the value of the selected pitchers
     // if the user has set the value since loading the page, we load the value from props
     // else we set the value to the pitchers who show up in the initial batted ball query
-    const pitcherProps = props.pitchers.length !== 0 ? props.pitchers : getPlayerNames(props.data.battedBallsBetweenDates.edges, 'pitcher')
+    const pitcherProps = props.pitchers.length !== 0 ? props.pitchers : getPlayerNames(props.data.battedBalls.edges, 'pitcher')
 
     const [selectedPitchers, setSelectedPitchers] = useState(pitcherProps)
     const [changed, setChanged] = useState(false)

@@ -60,7 +60,7 @@ export default function ChartFilter(props) {
         <Typography variant="subtitle1">Date Range: {valueToDate(new Date(minDate) / 1000)} - {valueToDate(new Date(maxDate) / 1000)}</Typography>
         <Range defaultValue={[new Date(minDate) / 1000, new Date(maxDate) / 1000]}
                min={new Date("2017-04-03") / 1000}
-               max={new Date("2017-10-10") / 1000}
+               max={new Date("2017-10-02") / 1000}
                step={86400}
                pushable={86400}
                trackStyle={[{backgroundColor: '#e8291c'}]}

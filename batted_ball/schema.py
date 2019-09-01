@@ -94,14 +94,20 @@ class Query(graphene.ObjectType):
     get_pitchers = DjangoFilterConnectionField(
         PitcherNode,
         sort=graphene.String(),
-        batters=graphene.List(graphene.String)
+        pitchers=graphene.List(graphene.String)
     )
-    batted_balls_between_dates = DjangoFilterConnectionField(
+    get_pitcher_teams_names = DjangoFilterConnectionField(
+        PitcherNode,
+        sort=graphene.String(),
+        pitcherTeams=graphene.List(graphene.String)
+    )
+    batted_balls = DjangoFilterConnectionField(
         BattedBallNode,
         filterset_class=BattedBallFilter,
         date_range=graphene.List(graphene.String),
         batters=graphene.List(graphene.String),
         pitchers=graphene.List(graphene.String),
+        pitcherTeams=graphene.List(graphene.String),
     )
 
     def resolve_get_batters(self, args, **kwargs):
@@ -125,12 +131,14 @@ class Query(graphene.ObjectType):
         qs = Pitcher.objects.filter(player__name__in=pitchers).order_by(sort)
         return qs
 
-    def resolve_batted_balls_between_dates(self, args, **kwargs):
+    def resolve_batted_balls(self, args, **kwargs):
         all_batters_names = [b.player.name for b in Batter.objects.all()]
         all_pitchers_names = [p.player.name for p in Pitcher.objects.all()]
+        all_teams = Team.objects.all()
         date_range = kwargs.get("date_range", ["2017-04-01", "2017-04-05"])
         batters = kwargs.get("batters", all_batters_names)
         pitchers = kwargs.get("pitchers", all_pitchers_names)
+        pitcher_teams = kwargs.get("pitcherTeams", all_teams)
         qs = BattedBall.objects\
             .filter(
                 Q(date__gte=date_range[0]) &
