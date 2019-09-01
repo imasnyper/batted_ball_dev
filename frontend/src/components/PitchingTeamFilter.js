@@ -1,4 +1,4 @@
-import {getPlayerNames} from "../utils/utils";
+import {getPitcherTeams, getPlayerTeamNodes, getPlayerTeamNames} from "../utils/utils";
 import React, {useState} from "react";
 import {GET_PITCHERS} from "../utils/queries";
 import {useQuery} from "@apollo/react-hooks";
@@ -31,53 +31,52 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function PitcherFilter(props) {
+export default function PitcherTeamFilter(props) {
     const classes = useStyles();
 
-    // set the value of the selected pitchers
-    // if the user has set the value since loading the page, we load the value from props
-    // else we set the value to the pitchers who show up in the initial batted ball query
-    const pitcherProps = props.pitchers.length !== 0 ? props.pitchers : getPlayerNames(props.data.battedBallsBetweenDates.edges, 'pitcher')
+    console.log(props.pitcherTeams)
 
-    const [selectedPitchers, setSelectedPitchers] = useState(pitcherProps)
-    const [changed, setChanged] = useState(false)
+    const pitcherTeamProps = props.pitcherTeams.length !== 0 ? props.pitcherTeams : getPlayerTeamNames(props.data.battedBallsBetweenDates.edges, "pitcher");
 
-    const {data, loading, error} = useQuery(GET_PITCHERS)
+    const [selectedPitcherTeams, setSelectedPitcherTeams] = useState(pitcherTeamProps);
+    const [changed, setChanged] = useState(false);
 
-    if (loading) return <p>Loading...</p>
-    if (error) return <p>Error :(</p>
+    const {data, loading, error} = useQuery(GET_PITCHERS);
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error :(</p>;
 
     const pitchers = data.getPitchers.edges
+    const pitcherTeams = getPlayerTeamNodes(pitchers, "pitcher")
 
     const handleChange = (event) => {
         event.persist()
-        setSelectedPitchers(event.target.value)
-        setChanged(true)
+        console.log(changed)
+        setSelectedPitcherTeams(event.target.value);
+        setChanged(true);
     }
 
     const handleSelectAll = () => {
-        setSelectedPitchers(getPlayerNames(pitchers, 'player'))
-        setChanged(true)
+        setSelectedPitcherTeams(getPlayerTeamNames(pitcherTeams))
     }
 
     const handleSelectNone = () => {
-        setSelectedPitchers([])
-        setChanged(true)
+        setSelectedPitcherTeams([])
     }
 
     return <Grid item>
         <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="pitcher-select">Pitcher(s)</InputLabel>
+            <InputLabel htmlFor="pitcher-team-select">Pitcher Team(s)</InputLabel>
             <Select
                 multiple
-                value={selectedPitchers}
+                value={selectedPitcherTeams}
                 onChange={handleChange}
-                input={<Input id="pitcher-select"/>}
+                input={<Input id="pitcher-team-select"/>}
                 MenuProps={MenuProps}
             >
-                {pitchers.map(edge => (
-                    <MenuItem key={edge.node.player.id} value={edge.node.player.name}>
-                        {edge.node.player.name}
+                {pitcherTeams.map(team => (
+                    <MenuItem key={team.id} value={team.name}>
+                        {team.name}
                     </MenuItem>
                 ))}
             </Select>
@@ -88,7 +87,7 @@ export default function PitcherFilter(props) {
                     variant="contained"
                     disabled={!changed}
                     color="primary"
-                    onClick={() => props.onPitcherChange(selectedPitchers)}
+                    onClick={() => props.onPitcherTeamChange(selectedPitcherTeams)}
                 >
                     Apply
                 </Button>

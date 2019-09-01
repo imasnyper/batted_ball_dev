@@ -8,7 +8,7 @@ import SprayChart from "./SprayChart";
 import ZonePlot from "./ZonePlot";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ResponsiveContainer from "recharts/es6/component/ResponsiveContainer";
-import {convertDateRange, getPlayerNames} from "../utils/utils";
+import {convertDateRange, getPlayerNames, getPlayerTeamNames} from "../utils/utils";
 import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles(theme => ({
@@ -41,6 +41,7 @@ export default function ChartContainer(props) {
                 dateRange: [startDate, endDate],
                 batters: batters,
                 pitchers: pitchers,
+                pitcherTeams: pitcherTeams,
             },
             updateQuery: (previousData, {fetchMoreResult}) => {
                 const newEdges = fetchMoreResult.battedBallsBetweenDates.edges;
@@ -67,6 +68,7 @@ export default function ChartContainer(props) {
     const [dateRange, setDateRange] = useState(["2017-04-02", "2017-04-05"])
     const [batters, setBatters] = useState([])
     const [pitchers, setPitchers] = useState([])
+    const [pitcherTeams, setPitcherTeams] = useState([])
 
     const {loading, error, data, fetchMore, refetch} = useQuery(
         BATTED_BALLS_BETWEEN_DATES, {
@@ -86,14 +88,15 @@ export default function ChartContainer(props) {
             ) {
                 const newBatters = batters.length === 0 ? getPlayerNames(data.battedBallsBetweenDates.edges, 'batter') : batters;
                 const newPitchers = pitchers.length === 0 ? getPlayerNames(data.battedBallsBetweenDates.edges, 'pitcher') : pitchers;
-                console.log(newBatters)
-                console.log(newPitchers)
+                const newPitcherTeams = pitcherTeams.length === 0 ? getPlayerTeamNames(data.battedBallsBetweenDates.edges, 'pitcher') : pitcherTeams;
+
                 setBatters(newBatters);
                 setPitchers(newPitchers);
+                setPitcherTeams(newPitcherTeams);
                 // onLoadMore()
             }
         }
-    }, [batters, data, error, loading, pitchers]);
+    }, [batters, data, error, loading, pitcherTeams, pitchers]);
 
     const classes = useStyles();
 
@@ -104,8 +107,6 @@ export default function ChartContainer(props) {
     //     while (data.battedBallsBetweenDates.pageInfo.hasNextPage) { onLoadMore() }
     // }
 
-    console.log(batters)
-    console.log(pitchers)
 
     const onDateRangeChange = (startDate, endDate) => {
         const [sD, eD] = convertDateRange([startDate, endDate])
@@ -113,6 +114,8 @@ export default function ChartContainer(props) {
         refetch({
             dateRange: [sD, eD],
             batters: batters,
+            pitchers: pitchers,
+            pitcherTeams: pitcherTeams,
         })
     }
 
@@ -122,6 +125,7 @@ export default function ChartContainer(props) {
                 dateRange: dateRange,
                 batters: newBatters,
                 pitchers: pitchers,
+                pitcherTeams: pitcherTeams,
             }
         )
     }
@@ -133,6 +137,18 @@ export default function ChartContainer(props) {
                 dateRange: dateRange,
                 pitchers: newPitchers,
                 batters: batters,
+                pitcherTeams: pitcherTeams,
+            }
+        )
+    }
+
+    const onPitcherTeamChange = (newPitcherTeams) => {
+        setPitcherTeams(newPitcherTeams)
+        refetch({
+                dateRange: dateRange,
+                pitchers: newPitcherTeams,
+                batters: batters,
+                pitcherTeams: pitcherTeams,
             }
         )
     }
@@ -144,9 +160,11 @@ export default function ChartContainer(props) {
                 data={data}
                 batters={batters}
                 pitchers={pitchers}
+                pitcherTeams={pitcherTeams}
                 onDateRangeChange={onDateRangeChange}
                 onBatterChange={onBatterChange}
                 onPitcherChange={onPitcherChange}
+                onPitcherTeamChange={onPitcherTeamChange}
             />
         </Grid>
         <Grid item>
