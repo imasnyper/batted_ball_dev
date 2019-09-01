@@ -8,6 +8,7 @@ import BatterFilter from "../components/BatterFilter";
 import PitcherFilter from "../components/PitcherFilter";
 import {Typography} from "@material-ui/core";
 import {convertDateRange} from "../utils/utils";
+import PitcherTeamFilter from "../components/PitchingTeamFilter";
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip
 const Range = createSliderWithTooltip(Slider.Range)
@@ -51,6 +52,10 @@ export default function ChartFilter(props) {
         props.onPitcherChange(pitcher)
     }
 
+    const handlePitcherTeamChange = (pitcherTeams) => {
+        props.onPitcherTeamChange(pitcherTeams)
+    }
+
     return <Grid container>
         <Typography variant="subtitle1">Date Range: {valueToDate(new Date(minDate) / 1000)} - {valueToDate(new Date(maxDate) / 1000)}</Typography>
         <Range defaultValue={[new Date(minDate) / 1000, new Date(maxDate) / 1000]}
@@ -73,6 +78,11 @@ export default function ChartFilter(props) {
             onPitcherChange={handlePitcherChange}
             data={props.data}
             pitchers={props.pitchers}
+        />
+        <PitcherTeamFilter
+            onPitcherTeamChange={handlePitcherTeamChange}
+            data={props.data}
+            pitcherTeams={props.pitcherTeams}
         />
     </Grid>
 }

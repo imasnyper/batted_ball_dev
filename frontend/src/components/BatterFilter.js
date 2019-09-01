@@ -64,7 +64,7 @@ export default function BatterFilter(props) {
 
     return <Grid item>
         <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="batter-select">Batters</InputLabel>
+            <InputLabel htmlFor="batter-select">Batter(s)</InputLabel>
             <Select
                 multiple
                 value={selectedBatters}

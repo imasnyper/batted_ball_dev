@@ -24,7 +24,7 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
                  allBattedBalls[rType].push(result)
              }
          })
-    })
+    });
 
     let single, double, triple, home_run, hit_by_pitch, out;
     ({single, double, triple, home_run, hit_by_pitch, out} = allBattedBalls)
@@ -35,7 +35,7 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
 export function getPlayerNames(edges, edgeType) {
     let allPlayerNames = [];
     edges.forEach(edge => {
-        let playerName
+        let playerName;
         switch(edgeType) {
             case "batter":
                 playerName = edge.node.batter.player.name;
@@ -49,8 +49,33 @@ export function getPlayerNames(edges, edgeType) {
         if (!allPlayerNames.includes(playerName)) {
             allPlayerNames.push(playerName)
         }
-    })
+    });
     return allPlayerNames
+}
+
+export function getPlayerTeamNames(edges, edgeType) {
+    let allPlayerTeamNames = [];
+    console.log(edges)
+    edges.forEach(edge => {
+        let playerTeamName;
+        playerTeamName = edge.node[edgeType].player.team.name
+        if (!allPlayerTeamNames.includes(playerTeamName)) {
+            allPlayerTeamNames.push(playerTeamName)
+        }
+    })
+    return allPlayerTeamNames
+}
+
+export function getPlayerTeamNodes(edges) {
+    let allPlayerTeamNodes = [];
+    edges.forEach(edge => {
+        let playerTeamNode;
+        playerTeamNode = edge.node.player.team;
+        if (!allPlayerTeamNodes.includes(playerTeamNode)) {
+            allPlayerTeamNodes.push(playerTeamNode)
+        }
+    })
+    return allPlayerTeamNodes
 }
 
 export function getDataDateRange(data) {
