@@ -82,9 +82,17 @@ class BattedBallNode(DjangoObjectType):
 class Query(graphene.ObjectType):
     batted_ball = graphene.relay.Node.Field(BattedBallNode)
     all_batted_balls = DjangoFilterConnectionField(BattedBallNode)
-    all_players = DjangoFilterConnectionField(PlayerNode)
+    get_batting_team_names = DjangoFilterConnectionField(
+        TeamNode,
+        batters=graphene.List(graphene.String)
+    )
     get_batters = DjangoFilterConnectionField(
         BatterNode,
+        sort=graphene.String(),
+        batters=graphene.List(graphene.String)
+    )
+    get_pitchers = DjangoFilterConnectionField(
+        PitcherNode,
         sort=graphene.String(),
         batters=graphene.List(graphene.String)
     )
@@ -93,6 +101,7 @@ class Query(graphene.ObjectType):
         filterset_class=BattedBallFilter,
         date_range=graphene.List(graphene.String),
         batters=graphene.List(graphene.String),
+        pitchers=graphene.List(graphene.String),
     )
 
     def resolve_get_batters(self, args, **kwargs):
@@ -102,15 +111,32 @@ class Query(graphene.ObjectType):
         qs = Batter.objects.filter(player__name__in=batters).order_by(sort)
         return qs
 
+    def resolve_get_batting_team_names(self, args, **kwargs):
+        all_batting_team_names = list(set([b.player.team.name for b in Batter.objects.all()]))
+        sort = kwargs.get("sort", "name")
+        team_names = kwargs.get("batters", all_batting_team_names)
+        qs = Team.objects.filter(name__in=team_names).order_by(sort)
+        return qs
+
+    def resolve_get_pitchers(self, args, **kwargs):
+        all_pitcher_names = [b.player.name for b in Pitcher.objects.all()]
+        sort = kwargs.get("sort", "player__name")
+        pitchers = kwargs.get("pitchers", all_pitcher_names)
+        qs = Pitcher.objects.filter(player__name__in=pitchers).order_by(sort)
+        return qs
+
     def resolve_batted_balls_between_dates(self, args, **kwargs):
         all_batters_names = [b.player.name for b in Batter.objects.all()]
+        all_pitchers_names = [p.player.name for p in Pitcher.objects.all()]
         date_range = kwargs.get("date_range", ["2017-04-01", "2017-04-05"])
         batters = kwargs.get("batters", all_batters_names)
+        pitchers = kwargs.get("pitchers", all_pitchers_names)
         qs = BattedBall.objects\
             .filter(
                 Q(date__gte=date_range[0]) &
                 Q(date__lt=date_range[1])
             )\
-            .filter(batter__player__name__in=batters)
+            .filter(batter__player__name__in=batters)\
+            .filter(pitcher__player__name__in=pitchers)
         return qs
 

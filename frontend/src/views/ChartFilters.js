@@ -1,31 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import Slider from 'rc-slider';
 import Tooltip from 'rc-tooltip'
 import 'rc-slider/assets/index.css'
 import BatterFilter from "../components/BatterFilter";
-import {useQuery} from "@apollo/react-hooks";
-import {ALL_BATTERS} from "../queries";
+import PitcherFilter from "../components/PitcherFilter";
+import {Typography} from "@material-ui/core";
+import {convertDateRange} from "../utils/utils";
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip
 const Range = createSliderWithTooltip(Slider.Range)
-const Handle = Slider.Handle
-
-const handle = (props) => {
-    const { value, dragging, index, ...restProps } = props;
-    return (
-        <Tooltip
-            prefixCls="rc-slider-tooltip"
-            overlay={value}
-            visible={true}
-            placement={"top"}
-            key={index}
-        >
-            <Handle value={value} {...restProps} />
-        </Tooltip>
-    )
-}
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -34,35 +19,60 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+const dateToString = (date) => {
+    return date.toISOString().split("T")[0]
+}
+
+const valueToDate = (value) => {
+    return dateToString(new Date(value * 1000))
+}
+
 export default function ChartFilter(props) {
     const classes = useStyles()
-    let [minDate, maxDate] = props.dateRange
 
-    minDate = new Date(minDate)
-    maxDate = new Date(maxDate)
+    const [[minDate, maxDate], setDateRange] = useState(props.dateRange)
 
     const handleDateChange = (valueTuple) => {
         props.onDateRangeChange(valueTuple[0] * 1000, valueTuple[1] * 1000)
+    }
+
+    const handleMove = (valueTuple) => {
+        let [minDate, maxDate] = valueTuple
+        minDate *= 1000;
+        maxDate *= 1000;
+        setDateRange(convertDateRange([minDate, maxDate]))
     }
 
     const handleBatterChange = (batters) => {
         props.onBatterChange(batters)
     }
 
+    const handlePitcherChange = (pitcher) => {
+        props.onPitcherChange(pitcher)
+    }
+
     return <Grid container>
-        <Range defaultValue={[minDate / 1000, maxDate / 1000]}
+        <Typography variant="subtitle1">Date Range: {valueToDate(new Date(minDate) / 1000)} - {valueToDate(new Date(maxDate) / 1000)}</Typography>
+        <Range defaultValue={[new Date(minDate) / 1000, new Date(maxDate) / 1000]}
                min={new Date("2017-04-03") / 1000}
                max={new Date("2017-10-10") / 1000}
                step={86400}
+               pushable={86400}
+               trackStyle={[{backgroundColor: '#e8291c'}]}
+               handleStyle={[{backgroundColor: '#134a8e', border: 'solid 1px #134a8e'}]}
+               onChange={values => handleMove(values)}
                onAfterChange={values => handleDateChange(values)}
-               tipFormatter={value => `${new Date(value * 1000)}`}
+               tipFormatter={value => `${valueToDate(value)}`}
         />
         <BatterFilter
-            apolloClient={props.apolloClient}
             onBatterChange={handleBatterChange}
             data={props.data}
             batters={props.batters}
         />
-        <p># Batted Balls Loaded: {props.data.battedBallsBetweenDates.edges.length}</p>
+        <PitcherFilter
+            onPitcherChange={handlePitcherChange}
+            data={props.data}
+            pitchers={props.pitchers}
+        />
     </Grid>
 }

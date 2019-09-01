@@ -5,10 +5,21 @@ class Team(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=64)
 
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name
 
 class Park(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name
 
 
 class Player(models.Model):
@@ -21,13 +32,31 @@ class Player(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
     side = models.CharField(max_length=1, choices=BAT_THROW_SIDE, null=True)
 
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name
+
 
 class Batter(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE, null=True)
 
+    def __str__(self):
+        return self.player.name
+
+    def __repr__(self):
+        return self.player.name
+
 
 class Pitcher(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.player.name
+
+    def __repr__(self):
+        return self.player.name
 
 
 class BattedBall(models.Model):

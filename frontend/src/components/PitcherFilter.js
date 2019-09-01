@@ -1,6 +1,6 @@
 import {getPlayerNames} from "../utils/utils";
 import React, {useState} from "react";
-import {GET_BATTERS} from "../utils/queries";
+import {GET_PITCHERS} from "../utils/queries";
 import {useQuery} from "@apollo/react-hooks";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
@@ -31,48 +31,48 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function BatterFilter(props) {
+export default function PitcherFilter(props) {
     const classes = useStyles();
 
-    const batterProps = props.batters.length !== 0 ? props.batters : getPlayerNames(props.data.battedBallsBetweenDates.edges, 'batter')
+    const pitcherProps = props.pitchers.length !== 0 ? props.pitchers : getPlayerNames(props.data.battedBallsBetweenDates.edges, 'pitcher')
 
-    const [selectedBatters, setSelectedBatters] = useState(batterProps);
-    const [changed, setChanged] = useState(false);
+    const [selectedPitchers, setSelectedPitchers] = useState(pitcherProps)
+    const [changed, setChanged] = useState(false)
 
-    const {data, loading, error} = useQuery(GET_BATTERS);
+    const {data, loading, error} = useQuery(GET_PITCHERS)
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error :(</p>;
+    if (loading) return <p>Loading...</p>
+    if (error) return <p>Error :(</p>
 
-    const batters = data.getBatters.edges;
+    const pitchers = data.getPitchers.edges
 
     const handleChange = (event) => {
-        event.persist();
-        setSelectedBatters(event.target.value);
-        setChanged(true);
-    };
+        event.persist()
+        setSelectedPitchers(event.target.value)
+        setChanged(true)
+    }
 
     const handleSelectAll = () => {
-        setSelectedBatters(getPlayerNames(batters, 'player'))
+        setSelectedPitchers(getPlayerNames(pitchers, 'player'))
         setChanged(true)
-    };
+    }
 
     const handleSelectNone = () => {
-        setSelectedBatters([])
+        setSelectedPitchers([])
         setChanged(true)
-    };
+    }
 
     return <Grid item>
         <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="batter-select">Batters</InputLabel>
+            <InputLabel htmlFor="pitcher-select">Pitchers</InputLabel>
             <Select
                 multiple
-                value={selectedBatters}
+                value={selectedPitchers}
                 onChange={handleChange}
-                input={<Input id="batter-select"/>}
+                input={<Input id="pitcher-select"/>}
                 MenuProps={MenuProps}
             >
-                {batters.map(edge => (
+                {pitchers.map(edge => (
                     <MenuItem key={edge.node.player.id} value={edge.node.player.name}>
                         {edge.node.player.name}
                     </MenuItem>
@@ -85,7 +85,7 @@ export default function BatterFilter(props) {
                     variant="contained"
                     disabled={!changed}
                     color="primary"
-                    onClick={() => props.onBatterChange(selectedBatters)}
+                    onClick={() => props.onPitcherChange(selectedPitchers)}
                 >
                     Apply
                 </Button>
