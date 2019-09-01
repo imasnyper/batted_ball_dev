@@ -1,5 +1,9 @@
 export function organizeData(data, outputDataBaseName, secondUnit) {
     let getResultType = (edge, rType) => {
+        if (secondUnit === "Y" && Number(edge.node[outputDataBaseName + secondUnit]) <= -10) {
+            // the ball landed too far behind home plate to show properly on the chart
+            return null
+        }
         if (edge.node.resultType === rType || (edge.node.resultType.includes(rType) || edge.node.resultType === "sac_fly")) {
             let outputData = {};
 
@@ -28,15 +32,25 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
     return [single, double, triple, home_run, hit_by_pitch, out]
 }
 
-export function getBatterNames(edges, edgeType) {
-    let allBatterNames = []
+export function getPlayerNames(edges, edgeType) {
+    let allPlayerNames = [];
     edges.forEach(edge => {
-        const playerName = edgeType === "batter" ? edge.node.batter.player.name : edge.node.player.name
-        if (!allBatterNames.includes(playerName)) {
-            allBatterNames.push(playerName)
+        let playerName
+        switch(edgeType) {
+            case "batter":
+                playerName = edge.node.batter.player.name;
+                break;
+            case "pitcher":
+                playerName = edge.node.pitcher.player.name;
+                break;
+            default:
+                playerName = edge.node.player.name;
+        }
+        if (!allPlayerNames.includes(playerName)) {
+            allPlayerNames.push(playerName)
         }
     })
-    return allBatterNames
+    return allPlayerNames
 }
 
 export function getDataDateRange(data) {

@@ -90,8 +90,8 @@ export const LAST_BATTED_BALLS = gql`
 `;
 
 export const BATTED_BALLS_BETWEEN_DATES = gql`
-    query battedBallsBetweenDates($dateRange: [String], $endCursor: String, $batters: [String]) {
-        battedBallsBetweenDates(first: 100, after: $endCursor, dateRange: $dateRange, batters: $batters) {
+    query battedBallsBetweenDates($dateRange: [String], $endCursor: String, $batters: [String], $pitchers: [String]) {
+        battedBallsBetweenDates(first: 100, after: $endCursor, dateRange: $dateRange, batters: $batters, pitchers: $pitchers) {
             edges {
                 node {
                     ${returnFields}
@@ -103,90 +103,6 @@ export const BATTED_BALLS_BETWEEN_DATES = gql`
                 hasNextPage
             }
         }
-    }
-`;
-
-
-export const INITIAL_QUERY = gql`
-    query initialQuery($dateRange: [String], $batters: [String], $sort: String, $endCursor: String) {
-      battedBallsBetweenDates(first: 100, after: $endCursor, dateRange: $dateRange, batters: $batters) {
-        pageInfo {
-          endCursor
-          hasNextPage
-        }
-        edges {
-          node {
-            id
-            date
-            gamepk
-            homeTeam {
-              id
-              name
-            }
-            awayTeam {
-              id
-              name
-            }
-            park {
-              id
-              name
-            }
-            batter {
-              id
-              player {
-                id
-                name
-                team {
-                  id
-                  name
-                }
-                side
-              }
-            }
-            pitcher {
-              id
-              player {
-                id
-                name
-                team {
-                  id
-                  name
-                }
-                side
-              }
-            }
-            balls
-            strikes
-            resultType
-            pitchType
-            pitchSpeed
-            zoneLocationX
-            zoneLocationZ
-            launchSpeed
-            launchVertAng
-            launchHorizAng
-            landingLocationX
-            landingLocationY
-            hangTime
-          }
-          cursor
-        }
-      }
-      getBatters(sort: $sort) {
-        edges {
-          node {
-            player {
-              id
-              name
-              team {
-                id
-                name
-              }
-              side
-            }
-          }
-        }
-      }
     }
 `;
 
@@ -212,3 +128,22 @@ export const GET_BATTERS = gql`
 `;
 
 
+export const GET_PITCHERS = gql`
+    query getPitchers($sort: String, $pitchers: [String]){
+        getPitchers(sort: $sort, batters: $pitchers) {
+            edges {
+                node {
+                    player {
+                        id
+                        name
+                        team {
+                            id
+                            name
+                        }
+                        side
+                    }
+                }
+            }
+        }
+    }
+`;
