@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
 export default function BatterFilter(props) {
     const classes = useStyles();
 
-    const batterProps = props.batters.length !== 0 ? props.batters : getPlayerNames(props.data.battedBallsBetweenDates.edges, 'batter')
+    const batterProps = props.batters.length !== 0 ? props.batters : getPlayerNames(props.data.battedBalls.edges, 'batter')
 
     const [selectedBatters, setSelectedBatters] = useState(batterProps);
     const [changed, setChanged] = useState(false);

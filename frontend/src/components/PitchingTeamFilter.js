@@ -34,9 +34,9 @@ const useStyles = makeStyles(theme => ({
 export default function PitcherTeamFilter(props) {
     const classes = useStyles();
 
-    console.log(props.pitcherTeams)
-
-    const pitcherTeamProps = props.pitcherTeams.length !== 0 ? props.pitcherTeams : getPlayerTeamNames(props.data.battedBallsBetweenDates.edges, "pitcher");
+    const pitcherTeamProps = props.pitcherTeams.length !== 0 ?
+        props.pitcherTeams :
+        getPlayerTeamNames(props.data.battedBalls.edges, "pitcher");
 
     const [selectedPitcherTeams, setSelectedPitcherTeams] = useState(pitcherTeamProps);
     const [changed, setChanged] = useState(false);
@@ -57,12 +57,14 @@ export default function PitcherTeamFilter(props) {
     }
 
     const handleSelectAll = () => {
-        setSelectedPitcherTeams(getPlayerTeamNames(pitcherTeams))
-    }
+        setSelectedPitcherTeams(pitcherTeams.map((team) => team.name))
+        setChanged(true)
+    };
 
     const handleSelectNone = () => {
         setSelectedPitcherTeams([])
-    }
+        setChanged(true)
+    };
 
     return <Grid item>
         <FormControl className={classes.formControl}>

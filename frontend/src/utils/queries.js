@@ -55,43 +55,9 @@ export const returnFields = `
     hangTime
 `;
 
-export const BATTED_BALLS_QUERY = gql`
-    query allBattedBalls($endCursor: String) {
-        allBattedBalls(first:100, after: $endCursor){
-            edges {
-                node {
-                    ${returnFields}
-                }
-                cursor
-            }
-            pageInfo {
-                endCursor
-                hasNextPage
-            }
-        }
-    }  
-`;
-
-export const LAST_BATTED_BALLS = gql`
-    query allBattedBalls($endCursor: String) {
-        allBattedBalls(last:100, after: $endCursor){
-            edges {
-                node {
-                    ${returnFields}
-                }
-                cursor
-            }
-            pageInfo {
-                endCursor
-                hasNextPage
-            }
-        }
-    }  
-`;
-
-export const BATTED_BALLS_BETWEEN_DATES = gql`
-    query battedBallsBetweenDates($dateRange: [String], $endCursor: String, $batters: [String], $pitchers: [String]) {
-        battedBallsBetweenDates(first: 100, after: $endCursor, dateRange: $dateRange, batters: $batters, pitchers: $pitchers) {
+export const BATTED_BALLS = gql`
+    query battedBalls($dateRange: [String], $endCursor: String, $batters: [String], $pitchers: [String], $pitcherTeams: [String]) {
+        battedBalls(first: 100, after: $endCursor, dateRange: $dateRange, batters: $batters, pitchers: $pitchers, pitcherTeams: $pitcherTeams) {
             edges {
                 node {
                     ${returnFields}
@@ -130,7 +96,7 @@ export const GET_BATTERS = gql`
 
 export const GET_PITCHERS = gql`
     query getPitchers($sort: String, $pitchers: [String]){
-        getPitchers(sort: $sort, batters: $pitchers) {
+        getPitchers(sort: $sort, pitchers: $pitchers) {
             edges {
                 node {
                     player {

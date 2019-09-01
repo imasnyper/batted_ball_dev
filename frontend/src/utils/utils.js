@@ -17,7 +17,7 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
 
     let allBattedBalls = {"single": [], "double": [], "triple": [], "home_run": [], "hit_by_pitch": [], "out": []}
 
-    data.battedBallsBetweenDates.edges.forEach(edge => {
+    data.battedBalls.edges.forEach(edge => {
          return ["single", "double", "triple", "home_run", "hit_by_pitch", "out"].forEach(rType => {
              let result = getResultType(edge, rType)
              if (result) {
@@ -79,7 +79,7 @@ export function getPlayerTeamNodes(edges) {
 }
 
 export function getDataDateRange(data) {
-    let dates = data.battedBallsBetweenDates.edges.map(edge => new Date(edge.node.date))
+    let dates = data.battedBalls.edges.map(edge => new Date(edge.node.date))
 
     let minDate = new Date(Math.min.apply(0, dates))
     let maxDate = new Date(Math.max.apply(0, dates))
