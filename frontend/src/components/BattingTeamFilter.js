@@ -1,6 +1,6 @@
-import {getPlayerNames} from "../utils/utils";
+import {getPlayerTeamNodes, getPlayerTeamNames} from "../utils/utils";
 import React, {useState} from "react";
-import {GET_PITCHERS} from "../utils/queries";
+import {GET_BATTERS} from "../utils/queries";
 import {useQuery} from "@apollo/react-hooks";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
@@ -30,62 +30,63 @@ const useStyles = makeStyles(theme => ({
         maxWidth: 275,
     },
     noSelect: {
-        userSelect: "none",
+        userSelect: "none"
     }
 }));
 
-export default function PitcherFilter(props) {
+export default function BatterTeamFilter(props) {
     const classes = useStyles();
 
-    // set the value of the selected pitchers
-    // if the user has set the value since loading the page, we load the value from props
-    // else we set the value to the pitchers who show up in the initial batted ball query
-    const pitcherProps = props.pitchers.length !== 0 ? props.pitchers : getPlayerNames(props.data.battedBalls.edges, 'pitcher')
+    const batterTeamProps = props.batterTeams.length !== 0 ?
+        props.batterTeams :
+        getPlayerTeamNames(props.data.battedBalls.edges, "batter");
 
-    const [selectedPitchers, setSelectedPitchers] = useState(pitcherProps)
-    const [changed, setChanged] = useState(false)
+    const [selectedBatterTeams, setSelectedBatterTeams] = useState(batterTeamProps);
+    const [changed, setChanged] = useState(false);
 
-    const {data, loading, error} = useQuery(GET_PITCHERS)
+    const {data, loading, error} = useQuery(GET_BATTERS);
 
-    if (loading) return <p>Loading...</p>
-    if (error) return <p>Error :(</p>
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error :(</p>;
 
-    const pitchers = data.getPitchers.edges
+    const batters = data.getBatters.edges
+    const batterTeams = getPlayerTeamNodes(batters, "batter")
 
     const handleChange = (event) => {
         event.persist()
-        setSelectedPitchers(event.target.value)
-        setChanged(true)
+        console.log(changed)
+        setSelectedBatterTeams(event.target.value);
+        setChanged(true);
     }
 
     const handleSelectAll = () => {
-        setSelectedPitchers(getPlayerNames(pitchers, 'player'))
+        setSelectedBatterTeams(batterTeams.map((team) => team.name))
         setChanged(true)
-    }
+    };
 
     const handleSelectNone = () => {
-        setSelectedPitchers([])
+        setSelectedBatterTeams([])
         setChanged(true)
-    }
+    };
 
     return <Grid item>
         <FormControl className={classes.formControl}>
             <InputLabel
                 className={classes.noSelect}
-                htmlFor="pitcher-select"
+                htmlFor="batter-team-select"
             >
-                {selectedPitchers.length === 1 ? "Pitcher" : "Pitchers"}
+                {setSelectedBatterTeams.length === 1 ? "Batter Team" : "Batter Teams"}
             </InputLabel>
             <Select
                 multiple
-                value={selectedPitchers}
+                value={selectedBatterTeams}
                 onChange={handleChange}
-                input={<Input id="pitcher-select"/>}
+                input={<Input id="batter-team-select"/>}
                 MenuProps={MenuProps}
             >
-                {pitchers.map(edge => (
-                    <MenuItem key={edge.node.player.id} value={edge.node.player.name}>
-                        {edge.node.player.name}
+                {batterTeams.map(team => (
+                    <MenuItem key={team.id} value={team.name}>
+                        {team.name}
                     </MenuItem>
                 ))}
             </Select>
@@ -97,7 +98,7 @@ export default function PitcherFilter(props) {
                     variant="contained"
                     disabled={!changed}
                     color="primary"
-                    onClick={() => props.onPitcherChange(selectedPitchers)}
+                    onClick={() => props.onBatterTeamChange(selectedBatterTeams)}
                 >
                     Apply
                 </Button>

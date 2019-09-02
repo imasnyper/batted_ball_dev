@@ -27,7 +27,10 @@ const useStyles = makeStyles(theme => ({
     formControl: {
         margin: theme.spacing(1),
         minWidth: 120,
-        maxWidth: 300,
+        maxWidth: 275,
+    },
+    noSelect: {
+        userSelect: "none",
     }
 }));
 
@@ -64,7 +67,12 @@ export default function BatterFilter(props) {
 
     return <Grid item>
         <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="batter-select">Batter(s)</InputLabel>
+            <InputLabel
+                className={classes.noSelect}
+                htmlFor="batter-select"
+            >
+                {selectedBatters.length === 1 ? "Batter" : "Batters"}
+            </InputLabel>
             <Select
                 multiple
                 value={selectedBatters}
@@ -79,9 +87,10 @@ export default function BatterFilter(props) {
                 ))}
             </Select>
             <div>
-                <Button onClick={handleSelectNone}>Select None</Button>
-                <Button onClick={handleSelectAll}>Select All</Button>
+                <Button size="small" onClick={handleSelectNone}>Select None</Button>
+                <Button size="small" onClick={handleSelectAll}>Select All</Button>
                 <Button
+                    size="small"
                     variant="contained"
                     disabled={!changed}
                     color="primary"

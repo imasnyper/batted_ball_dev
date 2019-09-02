@@ -9,6 +9,7 @@ import PitcherFilter from "../components/PitcherFilter";
 import {Typography} from "@material-ui/core";
 import {convertDateRange} from "../utils/utils";
 import PitcherTeamFilter from "../components/PitchingTeamFilter";
+import BatterTeamFilter from "../components/BattingTeamFilter";
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip
 const Range = createSliderWithTooltip(Slider.Range)
@@ -17,6 +18,9 @@ const useStyles = makeStyles(theme => ({
     paper: {
         height: theme.spacing(12),
         backgroundColor: theme.palette.secondary.main
+    },
+    noSelect: {
+        userSelect: "none",
     },
 }));
 
@@ -52,12 +56,16 @@ export default function ChartFilter(props) {
         props.onPitcherChange(pitcher)
     }
 
+    const handleBatterTeamChange = (batterTeams) => {
+        props.onBatterTeamChange(batterTeams)
+    }
+
     const handlePitcherTeamChange = (pitcherTeams) => {
         props.onPitcherTeamChange(pitcherTeams)
     }
 
     return <Grid container>
-        <Typography variant="subtitle1">Date Range: {valueToDate(new Date(minDate) / 1000)} - {valueToDate(new Date(maxDate) / 1000)}</Typography>
+        <Typography className={classes.noSelect} variant="subtitle1">Date Range: {valueToDate(new Date(minDate) / 1000)} - {valueToDate(new Date(maxDate) / 1000)}</Typography>
         <Range defaultValue={[new Date(minDate) / 1000, new Date(maxDate) / 1000]}
                min={new Date("2017-04-03") / 1000}
                max={new Date("2017-10-02") / 1000}
@@ -68,6 +76,7 @@ export default function ChartFilter(props) {
                onChange={values => handleMove(values)}
                onAfterChange={values => handleDateChange(values)}
                tipFormatter={value => `${valueToDate(value)}`}
+               className={classes.range}
         />
         <BatterFilter
             onBatterChange={handleBatterChange}
@@ -78,6 +87,11 @@ export default function ChartFilter(props) {
             onPitcherChange={handlePitcherChange}
             data={props.data}
             pitchers={props.pitchers}
+        />
+        <BatterTeamFilter
+            onBatterTeamChange={handleBatterTeamChange}
+            data={props.data}
+            batterTeams={props.batterTeams}
         />
         <PitcherTeamFilter
             onPitcherTeamChange={handlePitcherTeamChange}

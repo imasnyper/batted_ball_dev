@@ -19,7 +19,7 @@ export default function AppHeader(props) {
     return (
         <AppBar position={"absolute"} className={classes.appBar}>
             <Toolbar>
-                <Typography className={classes.text} align='center' variant='h4'>Batted Ball Visualisation</Typography>
+                <Typography className={classes.text} align='center' variant='h4'>Batted Ball Visualisation - 2017 - AL West</Typography>
             </Toolbar>
         </AppBar>
     )

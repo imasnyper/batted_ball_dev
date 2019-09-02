@@ -82,24 +82,25 @@ class BattedBallNode(DjangoObjectType):
 class Query(graphene.ObjectType):
     batted_ball = graphene.relay.Node.Field(BattedBallNode)
     all_batted_balls = DjangoFilterConnectionField(BattedBallNode)
-    get_batting_team_names = DjangoFilterConnectionField(
+    get_batter_team_names = DjangoFilterConnectionField(
         TeamNode,
-        batters=graphene.List(graphene.String)
+        sort=graphene.String(),
+        batters=graphene.List(graphene.String),
     )
     get_batters = DjangoFilterConnectionField(
         BatterNode,
         sort=graphene.String(),
-        batters=graphene.List(graphene.String)
+        batters=graphene.List(graphene.String),
     )
     get_pitchers = DjangoFilterConnectionField(
         PitcherNode,
         sort=graphene.String(),
-        pitchers=graphene.List(graphene.String)
+        pitchers=graphene.List(graphene.String),
     )
     get_pitcher_teams_names = DjangoFilterConnectionField(
         PitcherNode,
         sort=graphene.String(),
-        pitcherTeams=graphene.List(graphene.String)
+        pitcherTeams=graphene.List(graphene.String),
     )
     batted_balls = DjangoFilterConnectionField(
         BattedBallNode,
@@ -108,6 +109,7 @@ class Query(graphene.ObjectType):
         batters=graphene.List(graphene.String),
         pitchers=graphene.List(graphene.String),
         pitcherTeams=graphene.List(graphene.String),
+        batterTeams=graphene.List(graphene.String),
     )
 
     def resolve_get_batters(self, args, **kwargs):
@@ -131,6 +133,13 @@ class Query(graphene.ObjectType):
         qs = Pitcher.objects.filter(player__name__in=pitchers).order_by(sort)
         return qs
 
+    def resolve_get_pitching_team_names(self, args, **kwargs):
+        all_pitching_team_names = list(set([b.player.team.name for b in Pitcher.objects.all()]))
+        sort = kwargs.get("sort", "name")
+        team_names = kwargs.get("pitching", all_pitching_team_names)
+        qs = Team.objects.filter(name__in=team_names).order_by(sort)
+        return qs
+
     def resolve_batted_balls(self, args, **kwargs):
         all_batters_names = [b.player.name for b in Batter.objects.all()]
         all_pitchers_names = [p.player.name for p in Pitcher.objects.all()]
@@ -139,12 +148,15 @@ class Query(graphene.ObjectType):
         batters = kwargs.get("batters", all_batters_names)
         pitchers = kwargs.get("pitchers", all_pitchers_names)
         pitcher_teams = kwargs.get("pitcherTeams", all_teams)
+        batter_teams = kwargs.get("batterTeams", all_teams)
         qs = BattedBall.objects\
             .filter(
                 Q(date__gte=date_range[0]) &
                 Q(date__lt=date_range[1])
-            )\
-            .filter(batter__player__name__in=batters)\
-            .filter(pitcher__player__name__in=pitchers)
+            ) \
+            .filter(batter__player__name__in=batters) \
+            .filter(pitcher__player__name__in=pitchers) \
+            .filter(pitcher__player__team__name__in=list(pitcher_teams)) \
+            .filter(batter__player__team__name__in=list(batter_teams))
         return qs
 
