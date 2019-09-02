@@ -25,6 +25,13 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
         if (edge.node.resultType === rType || edge.node.resultType.includes(rType)) {
             let outputData = {};
 
+            let landingLocationX = edge.node.landingLocationX;
+            let landingLocationY = edge.node.landingLocationY;
+            outputData["Pitcher Name"] = edge.node.pitcher.player.name;
+            outputData["Batter Name"] = edge.node.batter.player.name;
+            outputData['Distance'] = Math.sqrt(
+                Math.pow(landingLocationX, 2) +
+                Math.pow(landingLocationY, 2)).toFixed(2);
             returnFields.forEach(item => {
                 if (isNaN(item)) {
                     outputData[item] = edge.node[item]
@@ -32,20 +39,10 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
                     outputData[item] = Number(edge.node[item]).toFixed(2)
                 }
             });
-            let landingLocationX = edge.node.landingLocationX;
-            let landingLocationY = edge.node.landingLocationY;
-            outputData['Distance'] = Math.sqrt(
-                Math.pow(landingLocationX, 2) +
-                Math.pow(landingLocationY, 2)).toFixed(2);
-            outputData["Home Team"] = edge.node.homeTeam.name;
+
             outputData["Away Team"] = edge.node.awayTeam.name;
+            outputData["Home Team"] = edge.node.homeTeam.name;
             outputData["Park Name"] = edge.node.park.name;
-            outputData["Batter Name"] = edge.node.batter.player.name;
-            outputData["Batter Team"] = edge.node.batter.player.team.name;
-            outputData["Bat Side"] = edge.node.batter.player.side;
-            outputData["Pitcher Name"] = edge.node.pitcher.player.name;
-            outputData["Pitcher Team"] = edge.node.pitcher.player.team.name;
-            outputData["Pitcher Throw Side"] = edge.node.pitcher.player.side;
             return outputData
         }
         return null
