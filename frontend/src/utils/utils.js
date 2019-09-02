@@ -1,24 +1,60 @@
+const returnFields = [
+    "date",
+    "balls",
+    "strikes",
+    "resultType",
+    "pitchType",
+    "pitchSpeed",
+    "zoneLocationX",
+    "zoneLocationZ",
+    "launchSpeed",
+    "launchVertAng",
+    "launchHorizAng",
+    "landingLocationX",
+    "landingLocationY",
+    "hangTime"
+];
+
 export function organizeData(data, outputDataBaseName, secondUnit) {
     let getResultType = (edge, rType) => {
-        if (secondUnit === "Y" && Number(edge.node[outputDataBaseName + secondUnit]) <= -10) {
-            // the ball landed too far behind home plate to show properly on the chart
+
+        // the ball landed too far behind home plate to show properly on the chart
+        if (secondUnit === "Y" && Number(edge.node[outputDataBaseName + secondUnit]) <= -190) {
             return null
         }
-        if (edge.node.resultType === rType || (edge.node.resultType.includes(rType) || edge.node.resultType === "sac_fly")) {
+        if (edge.node.resultType === rType || edge.node.resultType.includes(rType)) {
             let outputData = {};
 
-            outputData[outputDataBaseName + "X"] = Number(edge.node[outputDataBaseName + "X"])
-            outputData[outputDataBaseName + secondUnit] = Number(edge.node[outputDataBaseName + secondUnit])
-
+            returnFields.forEach(item => {
+                if (isNaN(item)) {
+                    outputData[item] = edge.node[item]
+                } else {
+                    outputData[item] = Number(edge.node[item]).toFixed(2)
+                }
+            });
+            let landingLocationX = edge.node.landingLocationX;
+            let landingLocationY = edge.node.landingLocationY;
+            outputData['Distance'] = Math.sqrt(
+                Math.pow(landingLocationX, 2) +
+                Math.pow(landingLocationY, 2)).toFixed(2);
+            outputData["Home Team"] = edge.node.homeTeam.name;
+            outputData["Away Team"] = edge.node.awayTeam.name;
+            outputData["Park Name"] = edge.node.park.name;
+            outputData["Batter Name"] = edge.node.batter.player.name;
+            outputData["Batter Team"] = edge.node.batter.player.team.name;
+            outputData["Bat Side"] = edge.node.batter.player.side;
+            outputData["Pitcher Name"] = edge.node.pitcher.player.name;
+            outputData["Pitcher Team"] = edge.node.pitcher.player.team.name;
+            outputData["Pitcher Throw Side"] = edge.node.pitcher.player.side;
             return outputData
         }
         return null
     };
 
-    let allBattedBalls = {"single": [], "double": [], "triple": [], "home_run": [], "hit_by_pitch": [], "out": []}
+    let allBattedBalls = {"single": [], "double": [], "triple": [], "home_run": [], "hit_by_pitch": [], "out": [], "sac_fly": []}
 
     data.battedBalls.edges.forEach(edge => {
-         return ["single", "double", "triple", "home_run", "hit_by_pitch", "out"].forEach(rType => {
+         return ["single", "double", "triple", "home_run", "hit_by_pitch", "out", "sac_fly"].forEach(rType => {
              let result = getResultType(edge, rType)
              if (result) {
                  allBattedBalls[rType].push(result)
@@ -26,10 +62,10 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
          })
     });
 
-    let single, double, triple, home_run, hit_by_pitch, out;
-    ({single, double, triple, home_run, hit_by_pitch, out} = allBattedBalls)
+    let single, double, triple, home_run, hit_by_pitch, out, sac_fly;
+    ({single, double, triple, home_run, hit_by_pitch, out, sac_fly} = allBattedBalls)
 
-    return [single, double, triple, home_run, hit_by_pitch, out]
+    return [single, double, triple, home_run, hit_by_pitch, out, sac_fly]
 }
 
 export function getPlayerNames(edges, edgeType) {

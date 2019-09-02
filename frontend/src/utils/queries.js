@@ -3,7 +3,6 @@ import gql from 'graphql-tag'
 export const returnFields = `
     id
     date
-    gamepk
     homeTeam{
       id
       name
@@ -56,8 +55,8 @@ export const returnFields = `
 `;
 
 export const BATTED_BALLS = gql`
-    query battedBalls($dateRange: [String], $endCursor: String, $batters: [String], $pitchers: [String], $pitcherTeams: [String]) {
-        battedBalls(first: 100, after: $endCursor, dateRange: $dateRange, batters: $batters, pitchers: $pitchers, pitcherTeams: $pitcherTeams) {
+    query battedBalls($dateRange: [String], $endCursor: String, $batters: [String], $pitchers: [String], $pitcherTeams: [String], $batterTeams: [String]) {
+        battedBalls(first: 100, after: $endCursor, dateRange: $dateRange, batters: $batters, pitchers: $pitchers, pitcherTeams: $pitcherTeams, batterTeams: $batterTeams) {
             edges {
                 node {
                     ${returnFields}

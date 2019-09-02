@@ -1,4 +1,4 @@
-import {getPitcherTeams, getPlayerTeamNodes, getPlayerTeamNames} from "../utils/utils";
+import {getPlayerTeamNodes, getPlayerTeamNames} from "../utils/utils";
 import React, {useState} from "react";
 import {GET_PITCHERS} from "../utils/queries";
 import {useQuery} from "@apollo/react-hooks";
@@ -27,7 +27,10 @@ const useStyles = makeStyles(theme => ({
     formControl: {
         margin: theme.spacing(1),
         minWidth: 120,
-        maxWidth: 300,
+        maxWidth: 275,
+    },
+    noSelect: {
+        userSelect: "none"
     }
 }));
 
@@ -68,7 +71,12 @@ export default function PitcherTeamFilter(props) {
 
     return <Grid item>
         <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="pitcher-team-select">Pitcher Team(s)</InputLabel>
+            <InputLabel
+                className={classes.noSelect}
+                htmlFor="pitcher-team-select"
+            >
+                {selectedPitcherTeams.length === 1 ? "Pitcher Team" : "Pitcher Teams"}
+            </InputLabel>
             <Select
                 multiple
                 value={selectedPitcherTeams}
@@ -83,9 +91,10 @@ export default function PitcherTeamFilter(props) {
                 ))}
             </Select>
             <div>
-                <Button onClick={handleSelectNone}>Select None</Button>
-                <Button onClick={handleSelectAll}>Select All</Button>
+                <Button size="small" onClick={handleSelectNone}>Select None</Button>
+                <Button size="small" onClick={handleSelectAll}>Select All</Button>
                 <Button
+                    size="small"
                     variant="contained"
                     disabled={!changed}
                     color="primary"
