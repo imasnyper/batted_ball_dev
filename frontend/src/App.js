@@ -19,7 +19,7 @@ const theme = createMuiTheme({
             dark: '#ad0000',
             contrastText: '#000'
         }
-    }
+    },
 });
 
 function App() {

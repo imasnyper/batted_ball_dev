@@ -19,7 +19,7 @@ export default function SprayChart(props) {
         chartBackground: {
             backgroundImage: `url("https://prod-gameday.mlbstatic.com/responsive-gameday-assets/1.2.0/images/fields/13.svg")`,
             backgroundSize: "440px 440px",
-            backgroundPosition: "110px 20px",
+            backgroundPosition: "110px 23px",
             backgroundRepeat: "no-repeat",
         },
         noSelect: {
@@ -34,7 +34,6 @@ export default function SprayChart(props) {
     const propsData = props.data
     const [singles, doubles, triples, homeRuns, hitByPitch, outs, sac_fly] = organizeData(propsData, dataBaseName, "Y")
     const classes = useStyles()
-
 
     return (
         <div>

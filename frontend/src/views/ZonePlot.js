@@ -38,7 +38,7 @@ export default function ZonePlot(props) {
                 <Scatter name={"Triples"} data={triples} fill={"orange"}/>
                 <Scatter name={"Home Runs"} data={homeRuns} fill={"red"}/>
                 <Scatter name={"Hit By Pitch"} data={hitByPitch} fill={"pink"}/>
-                <Scatter name={"Outs"} data={outs} fill={"#ccc"}/>
+                <Scatter name={"Outs"} data={outs} fill={"gray"}/>
                 <Scatter name={"Sac Flies"} data={sacFly} fill={"purple"}/>
             </ScatterChart>
         </div>

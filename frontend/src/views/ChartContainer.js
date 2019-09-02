@@ -13,13 +13,14 @@ import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles(theme => ({
     container: {
+        margin: "0 3% 0 3%",
+    },
+    charts: {
         marginTop: theme.spacing(1),
-        [theme.breakpoints.up(1500)]: {
-            width: 1400
-        }
+        margin: "0 3% 0 3%",
     },
     chartFilters: {
-        marginTop: theme.spacing(15)
+        marginTop: theme.spacing(10),
     },
     progress: {
         margin: theme.spacing(2),
@@ -28,8 +29,7 @@ const useStyles = makeStyles(theme => ({
     },
     noSelect: {
         userSelect: "none",
-
-    }
+    },
 }));
 
 
@@ -39,7 +39,6 @@ export default function ChartContainer(props) {
 
     const onLoadMore = () => {
         const [startDate, endDate] = dateRange
-        console.log(batters)
         fetchMore({
             query: BATTED_BALLS,
             variables: {
@@ -79,9 +78,6 @@ export default function ChartContainer(props) {
     const {loading, error, data, fetchMore, refetch} = useQuery(
         BATTED_BALLS, {
         notifyOnNetworkStatusChange: true,
-        // variables: {
-        //     dateRange: dateRange,
-        // }
     });
 
     useEffect(() => {
@@ -113,7 +109,6 @@ export default function ChartContainer(props) {
                 setPitcherTeams(newPitcherTeams);
                 setBatterTeams(newBatterTeams);
                 setResultTypes(newResultTypes);
-                // onLoadMore();
             }
         }
     }, [batterTeams, batters, data, error, loading, pitcherTeams, pitchers, resultTypes]);
@@ -127,12 +122,12 @@ export default function ChartContainer(props) {
         setDateRange([sD, eD]);
         console.log(resultTypes);
         refetch({
+            dateRange: [sD, eD],
             batters: batters,
             pitchers: pitchers,
             pitcherTeams: pitcherTeams,
             batterTeams: batterTeams,
             resultTypes: resultTypes,
-            dateRange: [sD, eD],
         })
     };
 
@@ -199,8 +194,8 @@ export default function ChartContainer(props) {
         })
     };
 
-    return <div>
-        <Grid className={classes.chartFilters} alignItems={"center"} justify={"center"} container>
+    return <Grid className={classes.chartFilters} alignItems={"center"} justify={"center"} container>
+        <Grid container>
             <ChartFilters
                 dateRange={dateRange}
                 data={data}
@@ -227,24 +222,27 @@ export default function ChartContainer(props) {
                     >
                         Load More
                     </Button>
-                    {/*<Button onClick={() => onLoadAll()}>Load All</Button>*/}
                 </div>
                 :
-                <p>All results loaded!</p>
+                <Typography className={classes.noSelect}>All results loaded!</Typography>
             }
         </Grid>
-        <Typography className={classes.noSelect} variant="subtitle1">Batted Balls Plotted: {data.battedBalls.edges.length}</Typography>
-        <Grid className={classes.container} alignItems={"flex-start"} justify={"center"} spacing={2} container>
-            <Grid item sm={12} md={6}>
+        <Grid container justify="center">
+            <Grid item>
+                <Typography align="center" className={classes.noSelect} variant="subtitle1">Batted Balls Plotted per Chart: {data.battedBalls.edges.length}</Typography>
+            </Grid>
+        </Grid>
+        <Grid className={classes.charts} alignItems={"flex-start"} justify={"center"} spacing={2} container>
+            <Grid justify="center" item md={12} lg={6}>
                 <ResponsiveContainer>
                     <SprayChart data={data}/>
                 </ResponsiveContainer>
             </Grid>
-            <Grid item sm={12} md={6}>
-                <ResponsiveContainer height={600}>
+            <Grid justify="center" item md={12} lg={6}>
+                <ResponsiveContainer>
                     <ZonePlot data={data}/>
                 </ResponsiveContainer>
             </Grid>
         </Grid>
-    </div>
+    </Grid>
 }

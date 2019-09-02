@@ -15,13 +15,12 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip
 const Range = createSliderWithTooltip(Slider.Range)
 
 const useStyles = makeStyles(theme => ({
-    paper: {
-        height: theme.spacing(12),
-        backgroundColor: theme.palette.secondary.main
-    },
     noSelect: {
         userSelect: "none",
     },
+    filters: {
+        padding: "0 3% 0 3%"
+    }
 }));
 
 const dateToString = (date) => {
@@ -68,46 +67,58 @@ export default function ChartFilter(props) {
         props.onResultTypeChange(resultTypes)
     };
 
-    console.log(props.resultTypes)
-
-    return <Grid container>
-        <Typography className={classes.noSelect} variant="subtitle1">Date Range: {valueToDate(new Date(minDate) / 1000)} - {valueToDate(new Date(maxDate) / 1000)}</Typography>
-        <Range defaultValue={[new Date(minDate) / 1000, new Date(maxDate) / 1000]}
-               min={new Date("2017-04-03") / 1000}
-               max={new Date("2017-10-02") / 1000}
-               step={86400}
-               pushable={86400}
-               trackStyle={[{backgroundColor: '#e8291c'}]}
-               handleStyle={[{backgroundColor: '#134a8e', border: 'solid 1px #134a8e'}]}
-               onChange={values => handleMove(values)}
-               onAfterChange={values => handleDateChange(values)}
-               tipFormatter={value => `${valueToDate(value)}`}
-               className={classes.range}
-        />
-        <BatterFilter
-            onBatterChange={handleBatterChange}
-            data={props.data}
-            batters={props.batters}
-        />
-        <PitcherFilter
-            onPitcherChange={handlePitcherChange}
-            data={props.data}
-            pitchers={props.pitchers}
-        />
-        <BatterTeamFilter
-            onBatterTeamChange={handleBatterTeamChange}
-            data={props.data}
-            batterTeams={props.batterTeams}
-        />
-        <PitcherTeamFilter
-            onPitcherTeamChange={handlePitcherTeamChange}
-            data={props.data}
-            pitcherTeams={props.pitcherTeams}
-        />
-        <ResultTypeFilter
-            onResultTypeChange={handleResultTypeChange}
-            data={props.data}
-            resultTypes={props.resultTypes}
-        />
+    return <Grid className={classes.filters} container alignItems="center">
+        <Grid container alignItems="center">
+            <Typography className={classes.noSelect} variant="subtitle1">Date Range: {valueToDate(new Date(minDate) / 1000)} - {valueToDate(new Date(maxDate) / 1000)}</Typography>
+            <Range defaultValue={[new Date(minDate) / 1000, new Date(maxDate) / 1000]}
+                   min={new Date("2017-04-03") / 1000}
+                   max={new Date("2017-10-02") / 1000}
+                   step={86400}
+                   pushable={86400}
+                   trackStyle={[{backgroundColor: '#e8291c'}]}
+                   handleStyle={[{backgroundColor: '#134a8e', border: 'solid 1px #134a8e'}]}
+                   onChange={values => handleMove(values)}
+                   onAfterChange={values => handleDateChange(values)}
+                   tipFormatter={value => `${valueToDate(value)}`}
+                   className={classes.range}
+            />
+        </Grid>
+        <Grid container justify="center">
+            <Grid item>
+                <BatterFilter
+                    onBatterChange={handleBatterChange}
+                    data={props.data}
+                    batters={props.batters}
+                />
+            </Grid>
+            <Grid item>
+                <PitcherFilter
+                    onPitcherChange={handlePitcherChange}
+                    data={props.data}
+                    pitchers={props.pitchers}
+                />
+            </Grid>
+            <Grid item>
+                <BatterTeamFilter
+                    onBatterTeamChange={handleBatterTeamChange}
+                    data={props.data}
+                    batterTeams={props.batterTeams}
+                />
+            </Grid>
+            <Grid item>
+                <PitcherTeamFilter
+                    onPitcherTeamChange={handlePitcherTeamChange}
+                    data={props.data}
+                    pitcherTeams={props.pitcherTeams}
+                />
+            </Grid>
+            <Grid item>
+                <ResultTypeFilter
+                    onResultTypeChange={handleResultTypeChange}
+                    data={props.data}
+                    resultTypes={props.resultTypes}
+                />
+            </Grid>
+        </Grid>
     </Grid>
 }

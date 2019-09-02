@@ -17,6 +17,8 @@ The other filters require you to press their associated apply button to filter t
 
 You can mouse over individual data points to see more information about each batted ball.
 
+*Batted balls of type: single, double, triple, home_run, hit_by_pitch, field_out, force_out, or sac_fly
+
 #### **Installation Instructions**
 ###### Pre-Requisites:
 - Python 3.7+
