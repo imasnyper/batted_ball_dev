@@ -1,6 +1,7 @@
 import Paper from "@material-ui/core/Paper";
 import React from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import {convertKeyForDisplay, convertStringForDisplay} from "../utils/utils";
 
 
 const useStyles = makeStyles(theme => ({
@@ -20,8 +21,11 @@ export default function RenderTooltip(props) {
     if (active) {
         const kvPairs = Object.entries(props.payload[0].payload)
         return <Paper className={classes.paper}>
-            {kvPairs.map(pair => (
-                <p className={classes.p}>{pair[0].split(/(?=[A-Z])/).join(" ")}: {pair[1]}</p>
+
+            {kvPairs.map((pair, index) => (
+                <p key={index} className={classes.p}>
+                    {convertKeyForDisplay(pair[0])}: {convertStringForDisplay(pair[1])}
+                </p>
             ))}
         </Paper>
     }
