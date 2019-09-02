@@ -1,6 +1,6 @@
-import {getPlayerNames} from "../utils/utils";
+import {getPlayerNames, getResultTypes, RESULT_TYPES, splitUnderScoredString} from "../utils/utils";
 import React, {useState} from "react";
-import {GET_BATTERS} from "../utils/queries";
+import {GET_RESULT_TYPES} from "../utils/queries";
 import {useQuery} from "@apollo/react-hooks";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
@@ -21,7 +21,7 @@ const MenuProps = {
             width: 250,
         }
     }
-}
+};
 
 
 const useStyles = makeStyles(theme => ({
@@ -32,58 +32,71 @@ const useStyles = makeStyles(theme => ({
     },
     noSelect: {
         userSelect: "none",
+    },
+    capitalize: {
+        textTransform: "capitalize",
     }
 }));
 
-export default function BatterFilter(props) {
+export default function ResultTypeFilter(props) {
     const classes = useStyles();
 
-    const batterProps = props.batters.length !== 0 ? props.batters : getPlayerNames(props.data.battedBalls.edges, 'batter')
+    // currently selected values for filter.
+    // either a value passed from props else the values present in the data
+    const resultTypesProps = props.resultTypes.length !== 0 ?
+        props.resultTypes :
+        getResultTypes(props.data.battedBalls.edges)
 
-    const [selectedBatters, setSelectedBatters] = useState(batterProps);
+    // state for the filter. set to the currently selected values calculated above
+    const [selectedResultTypes, setSelectedResultTypes] = useState(resultTypesProps);
+    // tracks if the value has changed since render.
     const [changed, setChanged] = useState(false);
 
-    const {data, loading, error} = useQuery(GET_BATTERS);
+    // all possible values for filter
+    let resultTypes = RESULT_TYPES;
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error :(</p>;
-
-    const batters = data.getBatters.edges;
-
+    // set the local state for the filter value to what the user selected
     const handleChange = (event) => {
         event.persist();
-        setSelectedBatters(event.target.value);
+        setSelectedResultTypes(event.target.value);
         setChanged(true);
     };
 
+    // set the local state for the filter value to all possible values
     const handleSelectAll = () => {
-        setSelectedBatters(getPlayerNames(batters, 'player'))
+        setSelectedResultTypes(resultTypes)
         setChanged(true)
     };
 
+    // set the local state for the filter value to an empty array
     const handleSelectNone = () => {
-        setSelectedBatters([])
+        setSelectedResultTypes([])
         setChanged(true)
     };
+
+    const handleSubmit = () => {
+        props.onResultTypeChange(selectedResultTypes)
+    }
 
     return <Grid item>
         <FormControl className={classes.formControl}>
             <InputLabel
                 className={classes.noSelect}
-                htmlFor="batter-select"
+                htmlFor="result-type-select"
             >
-                {selectedBatters.length === 1 ? "Batter" : "Batters"}
+                {selectedResultTypes.length === 1 ? "Result Type" : "Result Types"}
             </InputLabel>
             <Select
                 multiple
-                value={selectedBatters}
+                className={classes.capitalize}
+                value={selectedResultTypes}
                 onChange={handleChange}
-                input={<Input id="batter-select"/>}
+                input={<Input id="result-type-select"/>}
                 MenuProps={MenuProps}
             >
-                {batters.map(edge => (
-                    <MenuItem key={edge.node.player.id} value={edge.node.player.name}>
-                        {edge.node.player.name}
+                {resultTypes.map((resultType, index) => (
+                    <MenuItem className={classes.capitalize} key={index} value={resultType}>
+                        {splitUnderScoredString(resultType)}
                     </MenuItem>
                 ))}
             </Select>
@@ -95,7 +108,7 @@ export default function BatterFilter(props) {
                     variant="contained"
                     disabled={!changed}
                     color="primary"
-                    onClick={() => props.onBatterChange(selectedBatters)}
+                    onClick={handleSubmit}
                 >
                     Apply
                 </Button>

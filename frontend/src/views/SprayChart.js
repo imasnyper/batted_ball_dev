@@ -9,7 +9,6 @@ import Tooltip from "recharts/es6/component/Tooltip";
 import Legend from "recharts/es6/component/Legend";
 import { organizeData } from "../utils/utils";
 import RenderTooltip from "../components/RenderTooltip"
-import {CartesianGrid, ReferenceDot} from "recharts";
 
 
 export default function SprayChart(props) {
@@ -62,12 +61,7 @@ export default function SprayChart(props) {
                 />
                 <Tooltip
                     content={<RenderTooltip />}
-                    viewBox={{x: 0, y: 500}}
                 />
-                {/*<ReferenceDot x={0} y={0} />*/}
-                {/*<ReferenceDot x={-231.931} y={231.931} />*/}
-                {/*<ReferenceDot x={231.931} y={231.931} />*/}
-                {/*<ReferenceDot x={0} y={400} />*/}
                 <Scatter name={"Singles"} data={singles} fill={"yellow"}/>
                 <Scatter name={"Doubles"} data={doubles} fill={"green"}/>
                 <Scatter name={"Triples"} data={triples} fill={"orange"}/>
@@ -75,16 +69,6 @@ export default function SprayChart(props) {
                 <Scatter name={"Hit By Pitch"} data={hitByPitch} fill={"pink"}/>
                 <Scatter name={"Outs"} data={outs} fill={"#ccc"}/>
                 <Scatter name={"Sac Flies"} data={sac_fly} fill={"purple"}/>
-                {/*<Scatter*/}
-                {/*    name={"Foul Lines"}*/}
-                {/*    data={[*/}
-                {/*        {"landingLocationX": -341.641, "landingLocationY": 341.641},*/}
-                {/*        {"landingLocationX": 0, "landingLocationY": 0},*/}
-                {/*        {"landingLocationX": 341.641, "landingLocationY": 341.641}*/}
-                {/*    ]}*/}
-                {/*    line*/}
-                {/*    fill={"#000"}*/}
-                {/*/>*/}
             </ScatterChart>
         </div>
     )

@@ -10,6 +10,7 @@ import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Button from "@material-ui/core/Button";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -90,7 +91,7 @@ export default function PitcherTeamFilter(props) {
                     </MenuItem>
                 ))}
             </Select>
-            <div>
+            <ButtonGroup>
                 <Button size="small" onClick={handleSelectNone}>Select None</Button>
                 <Button size="small" onClick={handleSelectAll}>Select All</Button>
                 <Button
@@ -102,7 +103,7 @@ export default function PitcherTeamFilter(props) {
                 >
                     Apply
                 </Button>
-            </div>
+            </ButtonGroup>
         </FormControl>
     </Grid>
 }

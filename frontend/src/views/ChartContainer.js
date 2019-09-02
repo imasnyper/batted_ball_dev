@@ -8,7 +8,7 @@ import SprayChart from "./SprayChart";
 import ZonePlot from "./ZonePlot";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ResponsiveContainer from "recharts/es6/component/ResponsiveContainer";
-import {convertDateRange, getPlayerNames, getPlayerTeamNames} from "../utils/utils";
+import {convertDateRange, getPlayerNames, getPlayerTeamNames, getResultTypes} from "../utils/utils";
 import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles(theme => ({
@@ -49,6 +49,7 @@ export default function ChartContainer(props) {
                 pitchers: pitchers,
                 pitcherTeams: pitcherTeams,
                 batterTeams: batterTeams,
+                resultTypes: resultTypes,
             },
             updateQuery: (previousData, {fetchMoreResult}) => {
                 const newEdges = fetchMoreResult.battedBalls.edges;
@@ -73,13 +74,14 @@ export default function ChartContainer(props) {
     const [pitchers, setPitchers] = useState([])
     const [pitcherTeams, setPitcherTeams] = useState([])
     const [batterTeams, setBatterTeams] = useState([])
+    const [resultTypes, setResultTypes] = useState([])
 
     const {loading, error, data, fetchMore, refetch} = useQuery(
         BATTED_BALLS, {
         notifyOnNetworkStatusChange: true,
-        variables: {
-            dateRange: dateRange,
-        }
+        // variables: {
+        //     dateRange: dateRange,
+        // }
     });
 
     useEffect(() => {
@@ -102,15 +104,19 @@ export default function ChartContainer(props) {
                 const newBatterTeams = batterTeams.length === 0 ?
                     getPlayerTeamNames(data.battedBalls.edges, 'batter') :
                     batterTeams;
+                const newResultTypes = resultTypes.length === 0 ?
+                    getResultTypes(data.battedBalls.edges) :
+                    resultTypes;
 
                 setBatters(newBatters);
                 setPitchers(newPitchers);
                 setPitcherTeams(newPitcherTeams);
                 setBatterTeams(newBatterTeams);
+                setResultTypes(newResultTypes);
                 // onLoadMore();
             }
         }
-    }, [batters, data, error, loading, pitcherTeams, pitchers]);
+    }, [batterTeams, batters, data, error, loading, pitcherTeams, pitchers, resultTypes]);
 
     if (loading) return <CircularProgress className={classes.progress}/>
     if (error) return <p>Error loading batters :(</p>
@@ -119,62 +125,78 @@ export default function ChartContainer(props) {
     const onDateRangeChange = (startDate, endDate) => {
         const [sD, eD] = convertDateRange([startDate, endDate]);
         setDateRange([sD, eD]);
+        console.log(resultTypes);
         refetch({
-            dateRange: [sD, eD],
             batters: batters,
             pitchers: pitchers,
             pitcherTeams: pitcherTeams,
             batterTeams: batterTeams,
+            resultTypes: resultTypes,
+            dateRange: [sD, eD],
         })
     };
 
     const onBatterChange = (newBatters) => {
         setBatters(newBatters);
         refetch({
-                dateRange: dateRange,
-                batters: newBatters,
-                pitchers: pitchers,
-                pitcherTeams: pitcherTeams,
-                batterTeams: batterTeams,
-            }
-        )
+            dateRange: dateRange,
+            batters: newBatters,
+            pitchers: pitchers,
+            pitcherTeams: pitcherTeams,
+            batterTeams: batterTeams,
+            resultTypes: resultTypes,
+        })
     };
 
     const onPitcherChange = (newPitchers) => {
         console.log(batters);
         setPitchers(newPitchers);
         refetch({
-                dateRange: dateRange,
-                pitchers: newPitchers,
-                batters: batters,
-                pitcherTeams: pitcherTeams,
-                batterTeams: batterTeams,
-            }
-        )
+            dateRange: dateRange,
+            pitchers: newPitchers,
+            batters: batters,
+            pitcherTeams: pitcherTeams,
+            batterTeams: batterTeams,
+            resultTypes: resultTypes,
+        })
     };
 
     const onPitcherTeamChange = (newPitcherTeams) => {
         setPitcherTeams(newPitcherTeams);
         refetch({
-                dateRange: dateRange,
-                pitchers: pitchers,
-                batters: batters,
-                pitcherTeams: newPitcherTeams,
-                batterTeams: batterTeams,
-            }
-        )
+            dateRange: dateRange,
+            pitchers: pitchers,
+            batters: batters,
+            pitcherTeams: newPitcherTeams,
+            batterTeams: batterTeams,
+            resultTypes: resultTypes,
+        })
     };
 
     const onBatterTeamChange = (newBatterTeams) => {
         setBatterTeams(newBatterTeams);
         refetch({
-                dateRange: dateRange,
-                pitchers: pitchers,
-                batters: batters,
-                pitcherTeams: pitcherTeams,
-                batterTeams: newBatterTeams,
-            }
-        )
+            dateRange: dateRange,
+            pitchers: pitchers,
+            batters: batters,
+            pitcherTeams: pitcherTeams,
+            batterTeams: newBatterTeams,
+            resultTypes: resultTypes,
+        })
+    };
+
+    const onResultTypeChange = (newResultTypes) => {
+        setResultTypes(newResultTypes);
+        console.log(newResultTypes)
+        console.log(resultTypes)
+        refetch({
+            dateRange: dateRange,
+            pitchers: pitchers,
+            batters: batters,
+            pitcherTeams: pitcherTeams,
+            batterTeams: batterTeams,
+            resultTypes: newResultTypes,
+        })
     };
 
     return <div>
@@ -186,11 +208,13 @@ export default function ChartContainer(props) {
                 pitchers={pitchers}
                 pitcherTeams={pitcherTeams}
                 batterTeams={batterTeams}
+                resultTypes={resultTypes}
                 onDateRangeChange={onDateRangeChange}
                 onBatterChange={onBatterChange}
                 onPitcherChange={onPitcherChange}
                 onPitcherTeamChange={onPitcherTeamChange}
                 onBatterTeamChange={onBatterTeamChange}
+                onResultTypeChange={onResultTypeChange}
             />
         </Grid>
         <Grid item>

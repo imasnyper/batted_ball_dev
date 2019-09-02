@@ -15,6 +15,39 @@ const returnFields = [
     "hangTime"
 ];
 
+export const RESULT_TYPES = ["single", "double", "triple", "home_run", "hit_by_pitch", "field_out", "force_out", "sac_fly"]
+
+//converts 'camelCased' strings into 'camel Cased' strings.
+export const convertKeyForDisplay = key => {
+    return key.split(/(?=[A-Z])/).join(" ")
+}
+
+export const splitUnderScoredString = underscoreString => {
+    return underscoreString.split("_").join(" ")
+}
+
+//accepts strings that may contain whole numbers or signed decimal numbers, or just plain text
+//checks if string is any kind of number with the RegExp '/^-?\d+\.?/d*$/'
+//converts all numbered strings into numbers then checks if they are integers
+//if they are not integers they are assumed to be decimal numbers which we round to 2 places
+//if they are integers they get returned as-is
+export const convertStringForDisplay = (stringToCheck) => {
+    if (/^-?\d+\.?\d*$/.test(stringToCheck)) {
+        let numString = Number(stringToCheck)
+        if(Number.isInteger(numString)) {
+            return numString
+        } else {
+            return Number(stringToCheck).toFixed(2)
+        }
+    } else {
+        return splitUnderScoredString(stringToCheck)
+    }
+}
+
+const calculateLineDistance = (lineX, lineY) => {
+    return Number(Math.sqrt(Math.pow(lineX, 2) + Math.pow(lineY, 2)))
+}
+
 export function organizeData(data, outputDataBaseName, secondUnit) {
     let getResultType = (edge, rType) => {
 
@@ -25,18 +58,18 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
         if (edge.node.resultType === rType || edge.node.resultType.includes(rType)) {
             let outputData = {};
 
-            let landingLocationX = edge.node.landingLocationX;
-            let landingLocationY = edge.node.landingLocationY;
+            let landingLocationX = Number(edge.node.landingLocationX);
+            let landingLocationY = Number(edge.node.landingLocationY);
+            let distance = calculateLineDistance(landingLocationX, landingLocationY)
+
             outputData["Pitcher Name"] = edge.node.pitcher.player.name;
             outputData["Batter Name"] = edge.node.batter.player.name;
-            outputData['Distance'] = Math.sqrt(
-                Math.pow(landingLocationX, 2) +
-                Math.pow(landingLocationY, 2)).toFixed(2);
+            outputData['Distance'] = distance;
             returnFields.forEach(item => {
-                if (isNaN(item)) {
-                    outputData[item] = edge.node[item]
-                } else {
+                if (/^\d+\.\d+$/.test(item)) {
                     outputData[item] = Number(edge.node[item]).toFixed(2)
+                } else {
+                    outputData[item] = edge.node[item]
                 }
             });
 
@@ -51,10 +84,14 @@ export function organizeData(data, outputDataBaseName, secondUnit) {
     let allBattedBalls = {"single": [], "double": [], "triple": [], "home_run": [], "hit_by_pitch": [], "out": [], "sac_fly": []}
 
     data.battedBalls.edges.forEach(edge => {
-         return ["single", "double", "triple", "home_run", "hit_by_pitch", "out", "sac_fly"].forEach(rType => {
+         return RESULT_TYPES.forEach(rType => {
              let result = getResultType(edge, rType)
              if (result) {
-                 allBattedBalls[rType].push(result)
+                 if (rType.includes("out")) {
+                     allBattedBalls["out"].push(result)
+                 } else {
+                     allBattedBalls[rType].push(result)
+                 }
              }
          })
     });
@@ -88,7 +125,6 @@ export function getPlayerNames(edges, edgeType) {
 
 export function getPlayerTeamNames(edges, edgeType) {
     let allPlayerTeamNames = [];
-    console.log(edges)
     edges.forEach(edge => {
         let playerTeamName;
         playerTeamName = edge.node[edgeType].player.team.name
@@ -111,34 +147,28 @@ export function getPlayerTeamNodes(edges) {
     return allPlayerTeamNodes
 }
 
-export function getDataDateRange(data) {
-    let dates = data.battedBalls.edges.map(edge => new Date(edge.node.date))
-
-    let minDate = new Date(Math.min.apply(0, dates))
-    let maxDate = new Date(Math.max.apply(0, dates))
-
-    minDate = new Date(minDate)
-    maxDate = new Date(maxDate)
-
-    minDate = String(minDate.toISOString().split("T")[0])
-    maxDate = String(maxDate.toISOString().split("T")[0])
-
-    return [minDate, maxDate]
+export function getResultTypes(edges, edgeType) {
+    let allResultTypes = [];
+    console.log(edges)
+    edges.forEach(edge => {
+        let resultType;
+        resultType = edge.node.resultType
+        if (!allResultTypes.includes(resultType) && RESULT_TYPES.includes(resultType)) {
+            allResultTypes.push(resultType)
+        }
+    })
+    return allResultTypes
 }
 
 export function convertDateRange(dateRange) {
     //convert Date objects into ISO Date strings for use in GraphQL queries
     let [minDate, maxDate] = dateRange
 
-    console.log(minDate, maxDate)
-
     minDate = new Date(minDate)
     maxDate = new Date(maxDate)
 
     minDate = String(minDate.toISOString().split("T")[0])
     maxDate = String(maxDate.toISOString().split("T")[0])
-
-    console.log(minDate, maxDate)
-
+    
     return [minDate, maxDate]
 }

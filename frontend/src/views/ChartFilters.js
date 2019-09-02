@@ -9,6 +9,7 @@ import {Typography} from "@material-ui/core";
 import {convertDateRange} from "../utils/utils";
 import PitcherTeamFilter from "../components/PitchingTeamFilter";
 import BatterTeamFilter from "../components/BattingTeamFilter";
+import ResultTypeFilter from "../components/ResultTypeFilter";
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip
 const Range = createSliderWithTooltip(Slider.Range)
@@ -63,6 +64,12 @@ export default function ChartFilter(props) {
         props.onPitcherTeamChange(pitcherTeams)
     };
 
+    const handleResultTypeChange = (resultTypes) => {
+        props.onResultTypeChange(resultTypes)
+    };
+
+    console.log(props.resultTypes)
+
     return <Grid container>
         <Typography className={classes.noSelect} variant="subtitle1">Date Range: {valueToDate(new Date(minDate) / 1000)} - {valueToDate(new Date(maxDate) / 1000)}</Typography>
         <Range defaultValue={[new Date(minDate) / 1000, new Date(maxDate) / 1000]}
@@ -96,6 +103,11 @@ export default function ChartFilter(props) {
             onPitcherTeamChange={handlePitcherTeamChange}
             data={props.data}
             pitcherTeams={props.pitcherTeams}
+        />
+        <ResultTypeFilter
+            onResultTypeChange={handleResultTypeChange}
+            data={props.data}
+            resultTypes={props.resultTypes}
         />
     </Grid>
 }

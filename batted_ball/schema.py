@@ -9,6 +9,9 @@ from graphene_django.filter import DjangoFilterConnectionField
 from .models import Team, Park, Player, Batter, Pitcher, BattedBall
 
 
+RESULT_TYPES = ["single", "double", "triple", "home_run", "hit_by_pitch", "field_out", "force_out", "sac_fly"]
+
+
 class TeamNode(DjangoObjectType):
     class Meta:
         model = Team
@@ -110,6 +113,7 @@ class Query(graphene.ObjectType):
         pitchers=graphene.List(graphene.String),
         pitcherTeams=graphene.List(graphene.String),
         batterTeams=graphene.List(graphene.String),
+        resultTypes=graphene.List(graphene.String),
     )
 
     def resolve_get_batters(self, args, **kwargs):
@@ -149,6 +153,7 @@ class Query(graphene.ObjectType):
         pitchers = kwargs.get("pitchers", all_pitchers_names)
         pitcher_teams = kwargs.get("pitcherTeams", all_teams)
         batter_teams = kwargs.get("batterTeams", all_teams)
+        result_types = kwargs.get("resultTypes", RESULT_TYPES)
         qs = BattedBall.objects\
             .filter(
                 Q(date__gte=date_range[0]) &
@@ -157,6 +162,6 @@ class Query(graphene.ObjectType):
             .filter(batter__player__name__in=batters) \
             .filter(pitcher__player__name__in=pitchers) \
             .filter(pitcher__player__team__name__in=list(pitcher_teams)) \
-            .filter(batter__player__team__name__in=list(batter_teams))
+            .filter(batter__player__team__name__in=list(batter_teams)) \
+            .filter(result_type__in=result_types)
         return qs
-
