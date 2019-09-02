@@ -66,7 +66,7 @@ export default function ChartContainer(props) {
                     : previousData;
             }
         })
-    }
+    };
 
     const [dateRange, setDateRange] = useState(["2017-04-02", "2017-04-05"])
     const [batters, setBatters] = useState([])
