@@ -1,7 +1,5 @@
-import {getPlayerNames, getResultTypes, RESULT_TYPES, splitUnderScoredString} from "../utils/utils";
+import {getResultTypes, RESULT_TYPES, splitUnderScoredString} from "../utils/utils";
 import React, {useState} from "react";
-import {GET_RESULT_TYPES} from "../utils/queries";
-import {useQuery} from "@apollo/react-hooks";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -76,7 +74,7 @@ export default function ResultTypeFilter(props) {
 
     const handleSubmit = () => {
         props.onResultTypeChange(selectedResultTypes)
-    }
+    };
 
     return <Grid item>
         <FormControl className={classes.formControl}>

@@ -67,8 +67,8 @@ export default function ChartFilter(props) {
         props.onResultTypeChange(resultTypes)
     };
 
-    return <Grid className={classes.filters} container alignItems="center">
-        <Grid container alignItems="center">
+    return <Grid className={classes.filters} container justify="center">
+        <Grid container>
             <Typography className={classes.noSelect} variant="subtitle1">Date Range: {valueToDate(new Date(minDate) / 1000)} - {valueToDate(new Date(maxDate) / 1000)}</Typography>
             <Range defaultValue={[new Date(minDate) / 1000, new Date(maxDate) / 1000]}
                    min={new Date("2017-04-03") / 1000}
@@ -99,6 +99,13 @@ export default function ChartFilter(props) {
                 />
             </Grid>
             <Grid item>
+                <ResultTypeFilter
+                    onResultTypeChange={handleResultTypeChange}
+                    data={props.data}
+                    resultTypes={props.resultTypes}
+                />
+            </Grid>
+            <Grid item>
                 <BatterTeamFilter
                     onBatterTeamChange={handleBatterTeamChange}
                     data={props.data}
@@ -110,13 +117,6 @@ export default function ChartFilter(props) {
                     onPitcherTeamChange={handlePitcherTeamChange}
                     data={props.data}
                     pitcherTeams={props.pitcherTeams}
-                />
-            </Grid>
-            <Grid item>
-                <ResultTypeFilter
-                    onResultTypeChange={handleResultTypeChange}
-                    data={props.data}
-                    resultTypes={props.resultTypes}
                 />
             </Grid>
         </Grid>

@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
     text: {
         color: theme.palette.primary.contrastText
     }
-}))
+}));
 
 export default function AppHeader(props) {
     const classes = useStyles();
@@ -19,7 +19,7 @@ export default function AppHeader(props) {
     return (
         <AppBar position={"absolute"} className={classes.appBar}>
             <Toolbar>
-                <Typography className={classes.text} align='center' variant='h4'>Batted Ball Visualisation - 2017 - AL West</Typography>
+                <Typography className={classes.text} align='center' variant='h4'>Batted Ball Visualization - 2017 - AL West</Typography>
             </Toolbar>
         </AppBar>
     )

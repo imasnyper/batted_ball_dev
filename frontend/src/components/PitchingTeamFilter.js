@@ -55,7 +55,6 @@ export default function PitcherTeamFilter(props) {
 
     const handleChange = (event) => {
         event.persist()
-        console.log(changed)
         setSelectedPitcherTeams(event.target.value);
         setChanged(true);
     }

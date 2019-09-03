@@ -38,12 +38,6 @@ class PlayerFilter(FilterSet):
         model = Player
         fields = "__all__"
 
-    order_by = OrderingFilter(
-        fields=(
-            ('name'),
-        )
-    )
-
 
 class BatterNode(DjangoObjectType):
     class Meta:

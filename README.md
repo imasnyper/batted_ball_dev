@@ -1,23 +1,23 @@
 # **Daniel Hayes' Project Submission**
-## **Batted all Visualisation - 2017 - AL WEST**
+## **Batted Ball Visualization - 2017 - AL WEST**
 
 #### **Description**
-This is my project submission for consideration for the Blue Jays Analytics/Web Developer position. I have made a spray chart and zone plot of batted balls. The charts appear side-by-side showing the same batted balls - the landing location in the spray chart, and the pitch zone location in the zone chart. Included are date, batter, pitcher, batting team, pitching team, and result type filters to narrow down the visible data on the charts. 
+This is my project submission for consideration for the Blue Jays Analytics/Web Developer position. I have chosen to complete Project 3 - Batted Ball Data Visualization. I have made a spray chart and zone plot of batted balls. The charts appear side-by-side showing the same batted balls; the landing location in the spray chart, and the pitch zone location in the zone chart. Included are date, batter, pitcher, batting team, pitching team, and result type filters to narrow down the visible data on the charts. 
 
 #### **Usage**
 The charts load by default all batted balls* between April 2nd and April 5th. In the filter selection dropdowns, items displayed as part of the loaded results will be preselected. 
 
-De selecting a preselected filter item and then applying the results will remove the selected item(s) from the results
+* Deselecting a preselected filter item and then applying the results will remove the selected item(s) from the results.
 
-Selecting(and then hitting the apply button) one or more unselected items will initially render no new results, as only the first 100 are loaded to save time, and no results with that selected value were in the first 100 results. To see results with the desired items included, either load more results for the given date range, or expand the date range and load more results.
+* Selecting (and then hitting the apply button) one or more unselected items will initially render no new results, as only the first 100 are loaded to save time, and no results with that selected value were in the first 100 results. To see results with the desired items included, either load more results for the given date range, or expand the date range and load more results.
 
-The date range filter is applied as soon as you let go of the mouse
+* The date range filter is applied as soon as you let go of the mouse.
 
-The other filters require you to press their associated apply button to filter the results
+* The other filters require you to press their associated apply button to filter the results.
 
-You can mouse over individual data points to see more information about each batted ball.
+* You can mouse over individual data points to see more information about each batted ball.
 
-*Batted balls of type: single, double, triple, home_run, hit_by_pitch, field_out, force_out, or sac_fly
+*Batted balls of type: single, double, triple, home_run, hit_by_pitch, field_out, force_out, or sac_fly.
 
 #### **Installation Instructions**
 ###### Pre-Requisites:

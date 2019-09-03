@@ -9,6 +9,7 @@ import Tooltip from "recharts/es6/component/Tooltip";
 import Legend from "recharts/es6/component/Legend";
 import { organizeData } from "../utils/utils";
 import RenderTooltip from "../components/RenderTooltip"
+import Grid from "@material-ui/core/Grid";
 
 
 export default function SprayChart(props) {
@@ -38,37 +39,39 @@ export default function SprayChart(props) {
     return (
         <div>
             <Typography className={classes.noSelect} align={"center"} variant={"h6"}>Spray Chart</Typography>
-            <ScatterChart width={600} height={600} className={classes.chartBackground}>
-                <Legend />
-                <XAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tick={false}
-                    type="number"
-                    scale="linear"
-                    domain={[-350, 350]}
-                    dataKey={dataBaseName + "X"}
-                />
-                <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tick={false}
-                    type="number"
-                    scale="linear"
-                    domain={[-200, 500]}
-                    dataKey={dataBaseName + "Y"}
-                />
-                <Tooltip
-                    content={<RenderTooltip />}
-                />
-                <Scatter name={"Singles"} data={singles} fill={"yellow"}/>
-                <Scatter name={"Doubles"} data={doubles} fill={"green"}/>
-                <Scatter name={"Triples"} data={triples} fill={"orange"}/>
-                <Scatter name={"Home Runs"} data={homeRuns} fill={"red"}/>
-                <Scatter name={"Hit By Pitch"} data={hitByPitch} fill={"pink"}/>
-                <Scatter name={"Outs"} data={outs} fill={"#ccc"}/>
-                <Scatter name={"Sac Flies"} data={sac_fly} fill={"purple"}/>
-            </ScatterChart>
+            <Grid container justify="center">
+                <ScatterChart width={600} height={600} className={classes.chartBackground}>
+                    <Legend />
+                    <XAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={false}
+                        type="number"
+                        scale="linear"
+                        domain={[-350, 350]}
+                        dataKey={dataBaseName + "X"}
+                    />
+                    <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={false}
+                        type="number"
+                        scale="linear"
+                        domain={[-200, 500]}
+                        dataKey={dataBaseName + "Y"}
+                    />
+                    <Tooltip
+                        content={<RenderTooltip />}
+                    />
+                    <Scatter name={"Singles"} data={singles} fill={"yellow"}/>
+                    <Scatter name={"Doubles"} data={doubles} fill={"green"}/>
+                    <Scatter name={"Triples"} data={triples} fill={"orange"}/>
+                    <Scatter name={"Home Runs"} data={homeRuns} fill={"red"}/>
+                    <Scatter name={"Hit By Pitch"} data={hitByPitch} fill={"pink"}/>
+                    <Scatter name={"Outs"} data={outs} fill={"#ccc"}/>
+                    <Scatter name={"Sac Flies"} data={sac_fly} fill={"purple"}/>
+                </ScatterChart>
+            </Grid>
         </div>
     )
 }

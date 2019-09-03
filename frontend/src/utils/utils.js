@@ -149,7 +149,6 @@ export function getPlayerTeamNodes(edges) {
 
 export function getResultTypes(edges, edgeType) {
     let allResultTypes = [];
-    console.log(edges)
     edges.forEach(edge => {
         let resultType;
         resultType = edge.node.resultType

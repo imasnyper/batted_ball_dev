@@ -120,14 +120,8 @@ export default function ChartContainer(props) {
     const onDateRangeChange = (startDate, endDate) => {
         const [sD, eD] = convertDateRange([startDate, endDate]);
         setDateRange([sD, eD]);
-        console.log(resultTypes);
         refetch({
             dateRange: [sD, eD],
-            batters: batters,
-            pitchers: pitchers,
-            pitcherTeams: pitcherTeams,
-            batterTeams: batterTeams,
-            resultTypes: resultTypes,
         })
     };
 
@@ -136,23 +130,14 @@ export default function ChartContainer(props) {
         refetch({
             dateRange: dateRange,
             batters: newBatters,
-            pitchers: pitchers,
-            pitcherTeams: pitcherTeams,
-            batterTeams: batterTeams,
-            resultTypes: resultTypes,
         })
     };
 
     const onPitcherChange = (newPitchers) => {
-        console.log(batters);
         setPitchers(newPitchers);
         refetch({
             dateRange: dateRange,
             pitchers: newPitchers,
-            batters: batters,
-            pitcherTeams: pitcherTeams,
-            batterTeams: batterTeams,
-            resultTypes: resultTypes,
         })
     };
 
@@ -160,11 +145,7 @@ export default function ChartContainer(props) {
         setPitcherTeams(newPitcherTeams);
         refetch({
             dateRange: dateRange,
-            pitchers: pitchers,
-            batters: batters,
             pitcherTeams: newPitcherTeams,
-            batterTeams: batterTeams,
-            resultTypes: resultTypes,
         })
     };
 
@@ -172,24 +153,14 @@ export default function ChartContainer(props) {
         setBatterTeams(newBatterTeams);
         refetch({
             dateRange: dateRange,
-            pitchers: pitchers,
-            batters: batters,
-            pitcherTeams: pitcherTeams,
             batterTeams: newBatterTeams,
-            resultTypes: resultTypes,
         })
     };
 
     const onResultTypeChange = (newResultTypes) => {
         setResultTypes(newResultTypes);
-        console.log(newResultTypes)
-        console.log(resultTypes)
         refetch({
             dateRange: dateRange,
-            pitchers: pitchers,
-            batters: batters,
-            pitcherTeams: pitcherTeams,
-            batterTeams: batterTeams,
             resultTypes: newResultTypes,
         })
     };
@@ -233,12 +204,12 @@ export default function ChartContainer(props) {
             </Grid>
         </Grid>
         <Grid className={classes.charts} alignItems={"flex-start"} justify={"center"} spacing={2} container>
-            <Grid justify="center" item md={12} lg={6}>
+            <Grid item md={12} lg={6}>
                 <ResponsiveContainer>
                     <SprayChart data={data}/>
                 </ResponsiveContainer>
             </Grid>
-            <Grid justify="center" item md={12} lg={6}>
+            <Grid item md={12} lg={6}>
                 <ResponsiveContainer>
                     <ZonePlot data={data}/>
                 </ResponsiveContainer>

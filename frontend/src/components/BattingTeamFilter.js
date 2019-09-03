@@ -55,7 +55,6 @@ export default function BatterTeamFilter(props) {
 
     const handleChange = (event) => {
         event.persist()
-        console.log(changed)
         setSelectedBatterTeams(event.target.value);
         setChanged(true);
     }
@@ -76,7 +75,7 @@ export default function BatterTeamFilter(props) {
                 className={classes.noSelect}
                 htmlFor="batter-team-select"
             >
-                {setSelectedBatterTeams.length === 1 ? "Batter Team" : "Batter Teams"}
+                {selectedBatterTeams.length === 1 ? "Batter Team" : "Batter Teams"}
             </InputLabel>
             <Select
                 multiple
